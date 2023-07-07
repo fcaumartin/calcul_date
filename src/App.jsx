@@ -1,15 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Button } from 'react-bootstrap';
 import lib from './lib'
+import Module from './Module';
 
 function App() {
 
-  lib.consume();
+    const [modules , setModules ] = useState([]);
 
-  return (
-    <>
-     
-    </>
-  )
+    const handle = (evt) => {
+        // console.log(evt);
+        setModules([...modules, "654"])
+    };
+    
+    useEffect( () => {
+        lib.consume();
+        
+    }, []);
+
+
+    return (
+        <>
+            <Button onClick={handle}>Clique</Button>
+            {
+                modules.map( (module, index) =>
+                    <Module key={index}/>
+                )
+            }
+        </>
+    )
 }
 
 export default App

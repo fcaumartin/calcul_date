@@ -5,7 +5,7 @@ const horaires = [ 7.75, 7.75, 7.75, 7.75, 4 ]
 
 const consume = () => {
     let duree = 17
-    let m = moment("2023-07-12", "YYYY-MM-DD")
+    let m = moment("2023-12-21", "YYYY-MM-DD")
 
     while (duree>0) {
         const heure_du_jour = horaires[m.format("d")-1]
@@ -93,7 +93,7 @@ const jours_feries = [
     "2023-08-15",
     "2023-11-01",
     "2023-11-11",
-    "2023-12-25",
+    "2023-12-25","2023-12-26","2023-12-27","2023-12-28","2023-12-29",
     "2022-01-01",
     "2022-04-18",
     "2022-05-01",
