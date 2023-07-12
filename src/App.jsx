@@ -8,11 +8,11 @@ function App() {
 
     const handle = (evt) => {
         // console.log(evt);
-        setModules([...modules, "654"])
+        setModules([...modules, "Accueil", "2023-07-01", 37])
     };
     
     useEffect( () => {
-        lib.consume();
+        console.log(lib.consume("2023-07-01", 17));
         
     }, []);
 

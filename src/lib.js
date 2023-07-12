@@ -3,19 +3,37 @@ import moment from "moment"
 const horaires = [ 7.75, 7.75, 7.75, 7.75, 4 ]
 
 
-const consume = () => {
-    let duree = 17
-    let m = moment("2023-12-21", "YYYY-MM-DD")
+const consume = (date_debut, duree, retard=0) => {
+
+
+    duree -= Math.abs(retard)
+    
+    let m = moment(date_debut, "YYYY-MM-DD")
+    m = jour_ouvre(m)
 
     while (duree>0) {
-        const heure_du_jour = horaires[m.format("d")-1]
-        duree -= heure_du_jour
-        console.log(m.format("DD/MM/YYYY") + " " + heure_du_jour + " (reste " + duree + ")")
+        let jj = m.format("DD/MM/YYYY")
+        let day_of_week = m.format("d")-1
+        const heures_du_jour = horaires[day_of_week]
+        duree -= heures_du_jour
+        console.log(m.format("DD/MM/YYYY") + " " + heures_du_jour + " (reste " + duree + ")")
 
-        m = next(m)
+        if (duree>0) m = next(m)
     }
 
-    // console.log(m.format("DD/MM/YYYY"))
+    return { 
+        fin: m.format("YYYY-MM-DD"), 
+        retard: Math.abs(duree) 
+    }
+}
+
+const jour_ouvre = (d) => {
+    let dow = d.format("d")
+    while (dow==0 || dow==6 || jours_feries.includes(d.format("YYYY-MM-DD"))) {
+        d.add(1, 'days')
+        dow = d.format("d")
+    } 
+    return d;
 }
 
 const next = (d) => {
