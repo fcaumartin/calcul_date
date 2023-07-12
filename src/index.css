@@ -1,0 +1,9 @@
+.module {
+    border-width: 2px;
+    border-color: rgb(206, 206, 206);
+    border-style: solid;
+    border-radius: 15px;
+    /* padding: 10px 5px 5px 5px; */
+    margin: 5px 0px 5px 0px;
+    box-shadow: 3px 3px 5px gainsboro;
+}
