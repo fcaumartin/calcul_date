@@ -11,6 +11,29 @@ function App() {
         // console.log(evt);
         setModules([...modules, { nom: "Accueil", debut: "2023-07-01", duree: 37}])
     };
+
+    const handleDeleteModule = (index) => {
+        console.log("delete " + index)
+        let tmp = [...modules]
+        console.log("before ")
+        console.log(tmp)
+        tmp.splice(index,1)
+        console.log("after ")
+        console.log(tmp)
+        setModules([...tmp])
+    };
+
+    const handleChangeModule = (index, data) => {
+        console.log("change " + index)
+        let tmp = [...modules]
+        console.log("before ")
+        console.log(tmp)
+        tmp[index] = data
+        console.log("after ")
+        console.log(tmp)
+        setModules([...tmp])
+    };
+
     
     useEffect( () => {
         console.log(lib.consume("2023-07-01", 17));
@@ -47,10 +70,10 @@ function App() {
                     <div className="row">
 
                         <div className='col-4'>
-                            <div class="form-floating">
+                            <div className="form-floating">
                                 <input 
                                     type="date" 
-                                    class="form-control" 
+                                    className="form-control" 
                                     id="floatingInput2" 
                                     placeholder="Date de début" 
                                     value={debut} 
@@ -60,17 +83,18 @@ function App() {
                             </div>
                         </div>
                         <div className="col-4">
-                            <button className="btn btn-primary" onClick={handle}>Ajouter un module</button>
+                            
+                            <button className="btn btn-primary my-3 w-100" onClick={handle}>Ajouter un module</button>
 
                         </div>
                         <div className="col-4">
-                            <button className="btn btn-primary" onClick={handle}>Calculer</button>
+                            <button className="btn btn-primary my-3 w-100" onClick={handle}>Calculer</button>
 
                         </div>
                     </div>
                     {
                         modules.map( (module, index) =>
-                            <Module key={index} data={module} />
+                            <Module key={index} data={module} onChange={(data) => {handleChangeModule(index, data)} } onDelete={()=> {handleDeleteModule(index)}}/>
                         )
                     }
 
