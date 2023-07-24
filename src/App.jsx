@@ -5,10 +5,11 @@ import Module from './Module';
 function App() {
 
     const [modules , setModules ] = useState([]);
+    const [debut, setDebut] = useState();
 
     const handle = (evt) => {
         // console.log(evt);
-        setModules([...modules, "Accueil", "2023-07-01", 37])
+        setModules([...modules, { nom: "Accueil", debut: "2023-07-01", duree: 37}])
     };
     
     useEffect( () => {
@@ -33,20 +34,43 @@ function App() {
                                 <a className="nav-link " aria-current="page" href="#">Modules</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">Calendrier</a>
+                                <a className="nav-link " href="#">Interruptions</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link ">Interruptions</a>
+                                <a className="nav-link" href="#">Calendrier</a>
                             </li>
                         </ul>
                         
                         </div>
                     </div>
                     </nav>
-                    <button className="btn btn-primary" onClick={handle}>Ajouter un module</button>
+                    <div className="row">
+
+                        <div className='col-4'>
+                            <div class="form-floating">
+                                <input 
+                                    type="date" 
+                                    class="form-control" 
+                                    id="floatingInput2" 
+                                    placeholder="Date de début" 
+                                    value={debut} 
+                                    onChange={ e => setDebut(e.target.value) }
+                                />
+                                <label htmlFor="floatingInput2">Date de début</label>
+                            </div>
+                        </div>
+                        <div className="col-4">
+                            <button className="btn btn-primary" onClick={handle}>Ajouter un module</button>
+
+                        </div>
+                        <div className="col-4">
+                            <button className="btn btn-primary" onClick={handle}>Calculer</button>
+
+                        </div>
+                    </div>
                     {
                         modules.map( (module, index) =>
-                            <Module key={index}/>
+                            <Module key={index} data={module} />
                         )
                     }
 
