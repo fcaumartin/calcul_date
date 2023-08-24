@@ -9,7 +9,7 @@ function Module(props) {
     const [couleur, setCouleur] = useState("#DD6677");
     const [duree, setDuree] = useState(props.data.duree);
     const [debut, setDebut] = useState(props.data.debut);
-    const [fin, setFin] = useState(null);
+    // const [fin, setFin] = useState(props.data.fin);
 
     const handleChange = (evt) => {
         // console.log(evt);
@@ -25,8 +25,12 @@ function Module(props) {
     }, []);
 
     useEffect( () => {
-        setDuree(props.data.duree)
+        setData(props.data)
     }, [props.data.duree]);
+
+    useEffect( () => {
+        setData(props.data)
+    }, [props.data.fin]);
 
     return (
         <div className='row module' style={{backgroundColor: couleur}}>
@@ -49,13 +53,13 @@ function Module(props) {
             </div>
             <div className="col-3">
                 <div className="form-floating">
-                    <input type="date" className="form-control" id="floatingInput2" disabled placeholder="Date de début" value={fin} onChange={ e => setFin(e.target.value) }/>
+                    <input type="date" className="form-control" id="floatingInput2" disabled placeholder="Date de début" value={props.data.fin} onChange={ handleChange }/>
                     <label htmlFor="floatingInput2">Date de fin</label>
                 </div>
             </div>
             <div className="col-3">
                 <div className="form-floating mb-2">
-                    <input type="number" className="form-control" id="floatingInput3" placeholder="Durée" value={duree} onChange={ e => setDuree(e.target.value) }/>
+                    <input type="number" className="form-control" id="floatingInput3" placeholder="Durée" name="duree" value={props.data.duree} onChange={ handleChange }/>
                     <label htmlFor="floatingInput3">Durée</label>
                 </div>
             </div>

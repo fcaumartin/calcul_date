@@ -16,7 +16,7 @@ const consume = (date_debut, duree, retard=0) => {
         let day_of_week = m.format("d")-1
         const heures_du_jour = horaires[day_of_week]
         duree -= heures_du_jour
-        console.log(m.format("DD/MM/YYYY") + " " + heures_du_jour + " (reste " + duree + ")")
+        //console.log(m.format("DD/MM/YYYY") + " " + heures_du_jour + " (reste " + duree + ")")
 
         if (duree>0) m = next(m)
     }

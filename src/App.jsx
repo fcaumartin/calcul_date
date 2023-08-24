@@ -13,26 +13,48 @@ function App() {
     };
 
     const handleDeleteModule = (index) => {
-        console.log("delete " + index)
+        // console.log("delete " + index)
         let tmp = [...modules]
-        console.log("before ")
-        console.log(tmp)
+        // console.log("before ")
+        // console.log(tmp)
         tmp.splice(index,1)
-        console.log("after ")
-        console.log(tmp)
+        // console.log("after ")
+        // console.log(tmp)
         setModules([...tmp])
     };
 
     const handleChangeModule = (index, data) => {
-        console.log("change " + index)
+        // console.log("change " + index)
         let tmp = [...modules]
-        console.log("before ")
-        console.log(tmp)
+        // console.log("before ")
+        // console.log(tmp)
         tmp[index] = data
-        console.log("after ")
-        console.log(tmp)
+        // console.log("after ")
+        // console.log(tmp)
+        tmp = planification(tmp, debut)
         setModules([...tmp])
     };
+
+    const planification = (modules, debut) => {
+        let start = debut
+        let retard = 0;
+        modules.forEach((e, i) => {
+            e.debut = start
+            console.log("-------------------------------------------------")
+            console.log(e, i);
+            console.log(e.debut, e.duree);
+            let result = lib.consume(start, e.duree)
+            console.log(result)
+            modules[i].fin = result.fin
+
+
+            start = result.fin
+            retard = result.retard
+
+        });
+
+        return modules
+    }
 
     
     useEffect( () => {
