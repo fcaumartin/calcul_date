@@ -110,7 +110,7 @@ function App() {
 
                         </div>
                         <div className="col-4">
-                            <button className="btn btn-primary my-3 w-100" onClick={handle}>Calculer</button>
+                            {/* <button className="btn btn-primary my-3 w-100" onClick={handle}>Calculer</button> */}
 
                         </div>
                     </div>
