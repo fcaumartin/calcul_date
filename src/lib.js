@@ -1,10 +1,10 @@
 import moment from "moment"
 
-const horaires = [ 7.75, 7.75, 7.75, 7.75, 4 ]
+// const horaires = [ 7.75, 7.75, 7.75, 7.75, 4 ]
+const horaires = [ 7, 7, 7, 7, 7 ]
 
 
 const consume = (date_debut, duree, retard=0) => {
-
 
     duree -= Math.abs(retard)
     

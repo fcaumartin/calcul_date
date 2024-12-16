@@ -142,7 +142,7 @@
         <mxCell id="e4BANxXLLdvi66eUv7ez-46" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;gradientColor=#b3b3b3;strokeColor=#666666;" vertex="1" parent="1">
           <mxGeometry x="390" y="210" width="160" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="e4BANxXLLdvi66eUv7ez-47" value="10&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" vertex="1" parent="1">
+        <mxCell id="e4BANxXLLdvi66eUv7ez-47" value="&lt;div&gt;10&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" vertex="1" parent="1">
           <mxGeometry x="390" y="230" width="160" height="20" as="geometry" />
         </mxCell>
         <mxCell id="e4BANxXLLdvi66eUv7ez-48" value="11" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" vertex="1" parent="1">
@@ -151,7 +151,7 @@
         <mxCell id="e4BANxXLLdvi66eUv7ez-49" value="12" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="390" y="270" width="160" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="e4BANxXLLdvi66eUv7ez-50" value="13" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;" vertex="1" parent="1">
+        <mxCell id="e4BANxXLLdvi66eUv7ez-50" value="13" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#647687;strokeColor=#314354;fontColor=#ffffff;" vertex="1" parent="1">
           <mxGeometry x="390" y="290" width="160" height="20" as="geometry" />
         </mxCell>
         <mxCell id="e4BANxXLLdvi66eUv7ez-51" value="14" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;" vertex="1" parent="1">
