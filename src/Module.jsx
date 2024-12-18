@@ -9,6 +9,11 @@ function Module(props) {
     const [debut, setDebut] = useState(props.debut || "");
     const [modules, setModules] = useState([]);  // Liste des modules
     const [fin, setFin] = useState(props.fin);
+    const [nom, setNom] = useState(() => {
+        const saved = localStorage.getItem("nom");
+        const initialValue = JSON.parse(saved);
+        return initialValue || "";
+    }); //Nom de la formation
 
     const handleChange = (evt) => {
         let tmp = {...data};
@@ -18,6 +23,9 @@ function Module(props) {
     };
 
 
+    const handleChangeNom = (event) =>{
+        setNom(event.target.value);
+    }
 
     useEffect(() => {
         setData(props.data);
@@ -84,6 +92,11 @@ function Module(props) {
                 <div className="col-4">
                     <button className="btn btn-primary my-3 w-100" onClick={handle}>Ajouter un module</button>
                 </div>
+            </div>
+
+            <div>
+                <input placeholder="Nom de la formation" value={nom} onChange={handleChangeNom}/>
+                <h1>{nom}</h1>
             </div>
 
             <div>
@@ -170,6 +183,9 @@ function Module(props) {
                     </div>
                 ))}
             </div>
+            
+
+
         </div>
 
     
