@@ -1,65 +1,127 @@
 import React, { useEffect, useState } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import multiMonthPlugin from '@fullcalendar/multimonth'
-
 import moment from 'moment';
-import { jours_feries } from './lib';  // Assurez-vous que lib.js est bien importé
+import 'moment/locale/fr'; // Importer les locales françaises
+import { jours_feries } from './lib'; // Liste des jours fériés
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
+moment.locale('fr'); // Configurer moment en français
 
 const Calendar = () => {
-    const [page, setPage] = useState("calendrier");
-    
   const [events, setEvents] = useState([]);
+  const [currentYear, setCurrentYear] = useState(moment().year()); // Suivre l'année en cours
 
   // Fonction pour vérifier si une date est un jour férié
-  const isHoliday = (date) => {
-    return jours_feries.includes(date.format('YYYY-MM-DD'));
-  };
-
-  // Générer les événements pour FullCalendar
+  const isHoliday = (date) => jours_feries.includes(date.format('YYYY-MM-DD'));
+  
+  // Générer les événements
   const generateEvents = () => {
-    let events = [];
-    let currentDate = moment().startOf('year'); // Commence à partir de l'année en cours
+    let generatedEvents = [];
 
-    // Boucle à travers chaque mois de l'année
-    for (let i = 0; i < 12; i++) {
-      let monthStart = currentDate.clone().month(i).startOf('month');
-      let monthEnd = currentDate.clone().month(i).endOf('month');
+    for (let month = 0; month < 12; month++) {
+      const daysInMonth = moment({ year: currentYear, month }).daysInMonth();
 
-      // Pour chaque jour du mois
-      for (let day = monthStart; day.isBefore(monthEnd, 'day'); day.add(1, 'day')) {
-        if (isHoliday(day)) {
-          events.push({
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = moment({ year: currentYear, month, day });
+        if (isHoliday(date)) {
+          generatedEvents.push({
             title: 'Jour férié',
-            date: day.format('YYYY-MM-DD'),
-            backgroundColor: '#ffcccb',  // Couleur pour les jours fériés
+            date: date.format('YYYY-MM-DD'),
+            backgroundColor: '#ffcccb',
           });
-        } else if (day.day() === 0 || day.day() === 6) {  // Weekends (Samedi = 6, Dimanche = 0)
-          events.push({
+        } else if (date.day() === 0 || date.day() === 6) {
+          generatedEvents.push({
             title: 'Weekend',
-            date: day.format('YYYY-MM-DD'),
-            backgroundColor: '#d3d3d3',  // Couleur pour les weekends
+            date: date.format('YYYY-MM-DD'),
+            backgroundColor: '#d3d3d3',
           });
         }
       }
     }
-    setEvents(events);
+
+    setEvents(generatedEvents);
   };
 
   useEffect(() => {
     generateEvents();
-  }, []);
+  }, [currentYear]); // Regénère les événements à chaque changement d'année
+
+  // Générer la structure des mois et jours en fonction des événements
+  const calendarData = () => {
+    const months = [];
+
+    for (let month = 0; month < 12; month++) {
+      const daysInMonth = moment({ year: currentYear, month }).daysInMonth();
+      const days = [];
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = moment({ year: currentYear, month, day }).format(
+          'YYYY-MM-DD'
+        );
+        const event = events.find((e) => e.date === date);
+
+        days.push({
+          day,
+          isHoliday: event?.title === 'Jour férié',
+          isWeekend: event?.title === 'Weekend',
+        });
+      }
+
+      months.push({
+        month: moment({ month }).format('MMMM'),
+        days,
+      });
+    }
+
+    return months;
+  };
+
+  // Gérer la modification de l'année via l'input
+  const handleYearChange = (e) => {
+    const value = e.target.value;
+
+    // Vérifie que la valeur est un entier valide
+    if (!isNaN(value) && value.length <= 4) {
+      setCurrentYear(parseInt(value) || moment().year()); // Met à jour l'année ou réinitialise si l'input est vide
+    }
+  };
 
   return (
     <div>
-      <h1>Calendrier avec jours fériés et week-ends</h1>
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin,multiMonthPlugin]}
-        initialView="multiMonthYear"
-        events={events}
-        weekends={true}  // Afficher les week-ends
-      />
+      <div className='d-flex justify-content-center align-items-center'>
+        <h1>Calendrier</h1>
+
+        {/* Navigation par année */}
+        <div className="input-group year-navigation">
+          <button className="bi bi-chevron-left btn btn-outline-secondary" onClick={() => setCurrentYear((prev) => prev - 1)}></button>
+          <input
+            type="text"
+            value={currentYear}
+            onChange={handleYearChange}
+            maxLength="4"
+            pattern="\d{4}"
+            title="Veuillez entrer une année valide (ex : 2023)"
+          />
+          <button className="bi bi-chevron-right btn btn-outline-secondary" onClick={() => setCurrentYear((prev) => prev + 1)}></button>
+        </div>
+      </div>
+      <div className="calendar-grid">
+        {/* Colonnes pour chaque mois */}
+        {calendarData().map((monthData, index) => (
+          <div key={index} className="month-column">
+            <h3>{monthData.month}</h3>
+            {monthData.days.map((dayData, idx) => (
+              <div
+                key={idx}
+                className={`day-cell ${
+                  dayData.isHoliday ? 'holiday' : ''
+                } ${dayData.isWeekend ? 'weekend' : ''}`}
+              >
+                {dayData.day}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

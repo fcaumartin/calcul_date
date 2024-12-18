@@ -44,7 +44,7 @@ function App() {
                     </nav>
 
                     {/* Affichage de la page active */}
-                    {page === "accueil" && <div><h2>Bienvenue sur l'application de gestion des modules !</h2><p>Choisissez une option dans la navigation pour commencer.</p></div>}
+                    {page === "accueil" && <div><h2>Bienvenue sur l'application de gestion de Formation !</h2><p>Choisissez une option dans la navigation pour commencer.</p></div>}
                     {page === "modules" && <Module />}
                     {page === "interruptions" && <div>Contenu de la page Interruptions</div>}
                     {page === "calendrier" && <Calendar />}
