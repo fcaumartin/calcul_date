@@ -1,130 +1,57 @@
-import { useState, useEffect } from 'react'
-import lib from './lib'
+import { useState } from 'react';
 import Module from './Module';
+import { FaHome, FaBook, FaCalendarAlt, FaCog } from 'react-icons/fa';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Calendar from './Calendar';
 
 function App() {
-
-    const [modules , setModules ] = useState([]);
-    const [debut, setDebut] = useState();
-    const [nom, setNom] = useState("");
-
-    const handle = (evt) => {
-        // console.log(evt);
-        setModules([...modules, { nom: "Accueil", debut: "2023-07-01", duree: 37}])
-    };
-
-    const handleDeleteModule = (index) => {
-        // console.log("delete " + index)
-        let tmp = [...modules]
-        // console.log("before ")
-        // console.log(tmp)
-        tmp.splice(index,1)
-        // console.log("after ")
-        // console.log(tmp)
-        setModules([...tmp])
-    };
-
-    const handleChangeModule = (index, data) => {
-        // console.log("change " + index)
-        let tmp = [...modules]
-        // console.log("before ")
-        // console.log(tmp)
-        tmp[index] = data
-        // console.log("after ")
-        // console.log(tmp)
-        tmp = planification(tmp, debut)
-        setModules([...tmp])
-    };
-
-    const planification = (modules, debut) => {
-        let start = debut
-        let retard = 0;
-        modules.forEach((e, i) => {
-            e.debut = start
-            console.log("-------------------------------------------------")
-            console.log(e, i);
-            console.log(e.debut, e.duree);
-            let result = lib.consume(start, e.duree)
-            console.log(result)
-            modules[i].fin = result.fin
-
-
-            start = result.fin
-            retard = result.retard
-
-        });
-
-        return modules
-    }
-
-    
-    useEffect( () => {
-        console.log(lib.consume("2024-12-20", 17));
-        
-    }, []);
-
+    const [page, setPage] = useState("accueil"); // Gestion des pages
 
     return (
-        <div className='container'>
+<div className="container">
+            {/* Navbar */}
             <div className="row">
                 <div className="col-12">
-                <nav className="navbar navbar-expand-lg bg-body-tertiary">
-                    <div className="container-fluid">
-                        <a className="navbar-brand" href="#">Planning</a>
-                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                        <a className="navbar-brand" href="#">Gestion des Modules</a>
+                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className="navbar-toggler-icon"></span>
                         </button>
-                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <a className="nav-link " aria-current="page" href="#">Modules</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link " href="#">Interruptions</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="#">Calendrier</a>
-                            </li>
-                        </ul>
-                        
+                        <div className="collapse navbar-collapse" id="navbarNav">
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <button className={`nav-link ${page === "accueil" ? "active" : ""}`} onClick={() => setPage("accueil")}>
+                                        Accueil
+                                    </button>
+                                </li>
+                                <li className="nav-item">
+                                    <button className={`nav-link ${page === "modules" ? "active" : ""}`} onClick={() => setPage("modules")}>
+                                        Modules
+                                    </button>
+                                </li>
+                                <li className="nav-item">
+                                    <button className={`nav-link ${page === "interruptions" ? "active" : ""}`} onClick={() => setPage("interruptions")}>
+                                        Interruptions
+                                    </button>
+                                </li>
+                                <li className="nav-item">
+                                    <button className={`nav-link ${page === "calendrier" ? "active" : ""}`} onClick={() => setPage("calendrier")}>
+                                        Calendrier
+                                    </button>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
                     </nav>
-                    <div className="row">
 
-                        <div className='col-4'>
-                            <div className="form-floating">
-                                <input 
-                                    type="date" 
-                                    className="form-control" 
-                                    id="floatingInput2" 
-                                    placeholder="Date de début" 
-                                    value={debut} 
-                                    onChange={ e => setDebut(e.target.value) }
-                                />
-                                <label htmlFor="floatingInput2">Date de début</label>
-                            </div>
-                        </div>
-                        <div className="col-4">
-                            
-                            <button className="btn btn-primary my-3 w-100" onClick={handle}>Ajouter un module</button>
-
-                        </div>
-                        <div className="col-4">
-                            {/* <button className="btn btn-primary my-3 w-100" onClick={handle}>Calculer</button> */}
-
-                        </div>
-                    </div>
-                    {
-                        modules.map( (module, index) =>
-                            <Module key={index} data={module} onChange={(data) => {handleChangeModule(index, data)} } onDelete={()=> {handleDeleteModule(index)}}/>
-                        )
-                    }
-
+                    {/* Affichage de la page active */}
+                    {page === "accueil" && <div><h2>Bienvenue sur l'application de gestion des modules !</h2><p>Choisissez une option dans la navigation pour commencer.</p></div>}
+                    {page === "modules" && <Module />}
+                    {page === "interruptions" && <div>Contenu de la page Interruptions</div>}
+                    {page === "calendrier" && <Calendar />}
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default App
+export default App;
