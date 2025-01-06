@@ -8,8 +8,16 @@ function App() {
     const [debut, setDebut] = useState();
 
     const handle = (evt) => {
-        // console.log(evt);
-        setModules([...modules, { nom: "Accueil", debut: "2023-07-01", duree: 37}])
+        let tmp = [...modules, { nom: "Accueil", duree: 35}]
+        tmp = planification(tmp, debut)
+        setModules([...tmp])
+    };
+
+    const handleChangeDebut = (e) => {
+        setDebut(e.target.value)
+        let tmp = [...modules]
+        tmp = planification(tmp, e.target.value)
+        setModules([...tmp])
     };
 
     const handleDeleteModule = (index) => {
@@ -67,7 +75,7 @@ function App() {
         <div className='container'>
             <div className="row">
                 <div className="col-12">
-                <nav className="navbar navbar-expand-lg bg-body-tertiary">
+                <nav className="navbar navbar-expand-md bg-body-tertiary mb-3">
                     <div className="container-fluid">
                         <a className="navbar-brand" href="#">Planning</a>
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +96,7 @@ function App() {
                         
                         </div>
                     </div>
-                    </nav>
+                </nav>
                     <div className="row">
 
                         <div className='col-4'>
@@ -99,7 +107,7 @@ function App() {
                                     id="floatingInput2" 
                                     placeholder="Date de début" 
                                     value={debut} 
-                                    onChange={ e => setDebut(e.target.value) }
+                                    onChange={ handleChangeDebut }
                                 />
                                 <label htmlFor="floatingInput2">Date de début</label>
                             </div>
