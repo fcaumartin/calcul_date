@@ -4,7 +4,6 @@ const horaires = [ 7.75, 7.75, 7.75, 7.75, 4 ]
 // const horaires = [ 7, 7, 7, 7, 7 ]
 
 
-
 const consume = (date_debut, duree, retard=0) => {
 
     duree -= Math.abs(retard)
@@ -137,4 +136,5 @@ const jours_feries = [
     "2021-12-25"
 ]
 
-export default { consume }
+export { consume, jours_feries };  // Exporter les deux éléments
+export default {consume};
