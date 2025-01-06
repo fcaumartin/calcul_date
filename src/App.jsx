@@ -6,6 +6,7 @@ function App() {
 
     const [modules , setModules ] = useState([]);
     const [debut, setDebut] = useState();
+    const [nom, setNom] = useState("");
 
     const handle = (evt) => {
         let tmp = [...modules, { nom: "Accueil", duree: 35}]
@@ -66,7 +67,7 @@ function App() {
 
     
     useEffect( () => {
-        console.log(lib.consume("2023-07-01", 17));
+        console.log(lib.consume("2024-12-20", 17));
         
     }, []);
 
