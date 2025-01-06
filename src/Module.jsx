@@ -9,6 +9,11 @@ function Module(props) {
     const [debut, setDebut] = useState(props.debut || "");
     const [modules, setModules] = useState([]);  // Liste des modules
     const [fin, setFin] = useState(props.fin);
+    const [nom, setNom] = useState(() => {
+        const saved = localStorage.getItem("nom");
+        const initialValue = JSON.parse(saved);
+        return initialValue || "";
+    }); //Nom de la formation
 
     const handleChange = (evt) => {
         let tmp = {...data};
@@ -17,9 +22,10 @@ function Module(props) {
         props.onChange(tmp);
     };
 
-    useEffect(() => {
-        setCouleur("#" + Math.floor(Math.random()*0xffffff).toString(16));
-    }, []);
+
+    const handleChangeNom = (event) =>{
+        setNom(event.target.value);
+    }
 
     useEffect(() => {
         setData(props.data);
@@ -29,7 +35,7 @@ function Module(props) {
         const newModule = {
             nom: "Nom du module",
             debut: "",
-            couleur: "#DD6677",
+            couleur: "#FF0000",
             duree: 37
         };
         setModules((prevModules) => {
@@ -89,6 +95,11 @@ function Module(props) {
             </div>
 
             <div>
+                <input placeholder="Nom de la formation" value={nom} onChange={handleChangeNom}/>
+                <h1>{nom}</h1>
+            </div>
+
+            <div>
                 {Array.isArray(modules) && modules.map((module, index) => (
                     <div key={index} className="row module" style={{ backgroundColor: module.couleur }}>
                                                     <div className="col-11">
@@ -143,14 +154,26 @@ function Module(props) {
                             </div>
                             <div className="col-2">
                                 <div className="form-floating mb-2">
-                                    <input
-                                        type="color"
+                                    <select
+                                        
                                         className="form-control"
                                         id={`floatingInput4-${index}`}
                                         placeholder="Couleur"
                                         value={module.couleur}
                                         onChange={(e) => handleChangeModule(index, 'couleur', e.target.value)}
-                                    />
+                                    >
+                                        
+                                        <option style={{ backgroundColor: "#FF0000"}} value="#FF0000">Rouge</option>
+                                        <option style={{ backgroundColor: "#00FF00"}} value="#00FF00">Vert</option>
+                                        <option style={{ backgroundColor: "#0000FF"}} value="#0000FF">Bleu</option>
+                                        <option style={{ backgroundColor: "#FFFF00"}} value="#FFFF00">Jaune</option>
+                                        <option style={{ backgroundColor: "#00FFFF"}} value="#00FFFF">Cyan</option>
+                                        <option style={{ backgroundColor: "#FF00FF"}} value="#FF00FF">Rose</option>
+                                        <option style={{ backgroundColor: "#FF7F00"}} value="#FF7F00">Orange</option>
+                                        <option style={{ backgroundColor: "#7F00FF"}} value="#7F00FF">Violet</option>
+                                        <option style={{ backgroundColor: "#962805"}} value="#962805">Marron</option>
+                                        
+                                    </select>
                                     <label htmlFor={`floatingInput4-${index}`}>Couleur</label>
                                 </div>
                             </div>
@@ -160,6 +183,9 @@ function Module(props) {
                     </div>
                 ))}
             </div>
+            
+
+
         </div>
 
     
