@@ -1,185 +1,150 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
-import frLocale from "moment/locale/fr";
+import "moment/locale/fr";
 import { jours_feries } from './lib'; // Liste des jours fériés
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
+// Initialisation de Moment.js en français
 moment.locale('fr', {
-    months : 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
-    monthsShort : 'Janv._Févr._Mars_Avr._Mai_Juin_Juil._Août_Sept._Oct._Nov._Déc.'.split('_'),
-    monthsParseExact : true,
-    weekdays : 'dimanche_lundi_mardi_mercredi_jeudi_vendredi_samedi'.split('_'),
-    weekdaysShort : 'dim._lun._mar._mer._jeu._ven._sam.'.split('_'),
-    weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
-    weekdaysParseExact : true,
-    longDateFormat : {
-        LT : 'HH:mm',
-        LTS : 'HH:mm:ss',
-        L : 'DD/MM/YYYY',
-        LL : 'D MMMM YYYY',
-        LLL : 'D MMMM YYYY HH:mm',
-        LLLL : 'dddd D MMMM YYYY HH:mm'
-    },
-    calendar : {
-        sameDay : '[Aujourd’hui à] LT',
-        nextDay : '[Demain à] LT',
-        nextWeek : 'dddd [à] LT',
-        lastDay : '[Hier à] LT',
-        lastWeek : 'dddd [dernier à] LT',
-        sameElse : 'L'
-    },
-    relativeTime : {
-        future : 'dans %s',
-        past : 'il y a %s',
-        s : 'quelques secondes',
-        m : 'une minute',
-        mm : '%d minutes',
-        h : 'une heure',
-        hh : '%d heures',
-        d : 'un jour',
-        dd : '%d jours',
-        M : 'un mois',
-        MM : '%d mois',
-        y : 'un an',
-        yy : '%d ans'
-    },
-    dayOfMonthOrdinalParse : /\d{1,2}(er|e)/,
-    ordinal : function (number) {
-        return number + (number === 1 ? 'er' : 'e');
-    },
-    meridiemParse : /PD|MD/,
-    isPM : function (input) {
-        return input.charAt(0) === 'M';
-    },
-    // In case the meridiem units are not separated around 12, then implement
-    // this function (look at locale/id.js for an example).
-    // meridiemHour : function (hour, meridiem) {
-    //     return /* 0-23 hour, given meridiem token and hour 1-12 */ ;
-    // },
-    meridiem : function (hours, minutes, isLower) {
-        return hours < 12 ? 'PD' : 'MD';
-    },
-    week : {
-        dow : 1, // Monday is the first day of the week.
-        doy : 4  // Used to determine first week of the year.
-    }
+  months: 'Janvier_Février_Mars_Avril_Mai_Juin_Juillet_Août_Septembre_Octobre_Novembre_Décembre'.split('_'),
+  weekdays: 'Dimanche_Lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi'.split('_'),
+  weekdaysShort: 'Dim_Lun_Mar_Mer_Jeu_Ven_Sam'.split('_'),
 });
 
 const Calendar = () => {
-  const [events, setEvents] = useState([]);
-  const [currentYear, setCurrentYear] = useState(moment().year()); // Suivre l'année en cours
+  const [months, setMonths] = useState([]);
+  const [tooltipVisible, setTooltipVisible] = useState(false); // Gestion de la visibilité du tooltip
+  const scrollContainerRef = useRef(null);
 
-  // Fonction pour vérifier si une date est un jour férié
-  const isHoliday = (date) => jours_feries.includes(date.format('YYYY-MM-DD'));
-  
-  // Générer les événements
-  const generateEvents = () => {
-    let generatedEvents = [];
-
-    for (let month = 0; month < 12; month++) {
-      const daysInMonth = moment({ year: currentYear, month }).daysInMonth();
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = moment({ year: currentYear, month, day });
-        if (isHoliday(date)) {
-          generatedEvents.push({
-            title: 'Jour férié',
-            date: date.format('YYYY-MM-DD'),
-            backgroundColor: '#ffcccb',
-          });
-        } else if (date.day() === 0 || date.day() === 6) {
-          generatedEvents.push({
-            title: 'Weekend',
-            date: date.format('YYYY-MM-DD'),
-            backgroundColor: '#d3d3d3',
-          });
-        }
-      }
-    }
-
-    setEvents(generatedEvents);
+  const isJourFerie = (dayDate) => {
+    return jours_feries.some((jour) => moment(jour).isSame(dayDate, 'day')); // Vérifier si un jour est férié
   };
 
+  const isWeekend = (dayDate) => {
+    const dayOfWeek = dayDate.day(); // Renvoie le jour de la semaine (0 = dimanche, 6 = samedi)
+    return dayOfWeek === 0 || dayOfWeek === 6; // Vérifier si c'est un samedi ou un dimanche
+  };
+
+  // Initialiser les mois visibles
+  // /! A MODIFIER LORS DE L'AJOUT DES MODULES POUR COMMENCER AU DEBUT DE LA FORMATION !\
   useEffect(() => {
-    generateEvents();
-  }, [currentYear]); // Regénère les événements à chaque changement d'année
+    const initialMonths = generateMonths(moment().subtract(1, 'month'), 8);
+    setMonths(initialMonths);
+  }, []);
 
-  // Générer la structure des mois et jours en fonction des événements
-  const calendarData = () => {
-    const months = [];
-
-    for (let month = 0; month < 12; month++) {
-      const daysInMonth = moment({ year: currentYear, month }).daysInMonth();
-      const days = [];
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = moment({ year: currentYear, month, day }).format(
-          'YYYY-MM-DD'
-        );
-        const event = events.find((e) => e.date === date);
-
-        days.push({
-          day,
-          isHoliday: event?.title === 'Jour férié',
-          isWeekend: event?.title === 'Weekend',
-        });
-      }
-
-      months.push({
-        month: moment({ month }).format('MMMM'),
-        days,
+  // Générer les mois à afficher
+  const generateMonths = (startDate, count) => {
+    const generated = [];
+    for (let i = 0; i < count; i++) {
+      const monthDate = startDate.clone().add(i, 'month');
+      generated.push({
+        date: monthDate,
+        days: generateMonthDays(monthDate),
       });
     }
-
-    return months;
+    return generated;
   };
 
-  // Gérer la modification de l'année via l'input
-  const handleYearChange = (e) => {
-    const value = e.target.value;
+  // Générer les jours d'un mois
+  const generateMonthDays = (date) => {
+    const startOfMonth = date.clone().startOf('month');
+    const endOfMonth = date.clone().endOf('month');
+    const days = [];
 
-    // Vérifie que la valeur est un entier valide
-    if (!isNaN(value) && value.length <= 4) {
-      setCurrentYear(parseInt(value) || moment().year()); // Met à jour l'année ou réinitialise si l'input est vide
+    for (let day = 1; day <= endOfMonth.date(); day++) {
+      const dayDate = date.clone().date(day);
+      days.push({
+        day,
+        date: dayDate,
+        weekday: dayDate.format('ddd'), // Jour de la semaine (abrégé)
+        isFerie: isJourFerie(dayDate), // Vérifier si c'est un jour férié
+        isWeekend: isWeekend(dayDate), // Vérifier si c'est un weekend
+      });
+    }
+    return days;
+  };
+
+  // Ajouter des mois précédents ou suivants
+  const addMonths = (direction) => {
+    const firstMonth = months[0].date.clone();
+    const lastMonth = months[months.length - 1].date.clone();
+
+    if (direction === 'prev') {
+      const newMonths = generateMonths(firstMonth.clone().subtract(3, 'month'), 3);
+      setMonths([...newMonths, ...months]);
+    } else if (direction === 'next') {
+      const newMonths = generateMonths(lastMonth.clone().add(1, 'month'), 3);
+      setMonths([...months, ...newMonths]);
+    }
+  };
+
+  // Détecter le scroll horizontal
+  const handleScroll = () => {
+    const container = scrollContainerRef.current;
+    if (container.scrollLeft === 0) {
+      addMonths('prev');
+    } else if (container.scrollWidth - container.scrollLeft === container.clientWidth) {
+      addMonths('next');
     }
   };
 
   return (
     <div>
-      <div className='d-flex justify-content-center align-items-center px-5'>
-        <h1>Calendrier</h1>
 
-        {/* Navigation par année */}
-        <div className="input-group year-navigation">
-          <button className="bi bi-chevron-left btn btn-outline-secondary" onClick={() => setCurrentYear((prev) => prev - 1)}></button>
-          <input
-            type="text"
-            value={currentYear}
-            onChange={handleYearChange}
-            maxLength="4"
-            pattern="\d{4}"
-            title="Veuillez entrer une année valide (ex : 2023)"
-          />
-          <button className="bi bi-chevron-right btn btn-outline-secondary" onClick={() => setCurrentYear((prev) => prev + 1)}></button>
-        </div>
-      </div>
-      <div className="calendar-grid px-5">
-        {/* Colonnes pour chaque mois */}
-        {calendarData().map((monthData, index) => (
-          <div key={index} className="month-column">
-            <h3>{monthData.month}</h3>
-            {monthData.days.map((dayData, idx) => (
-              <div
-                key={idx}
-                className={`day-cell ${
-                  dayData.isHoliday ? 'holiday' : ''
-                } ${dayData.isWeekend ? 'weekend' : ''}`}
-              >
-                {dayData.day}
-              </div>
-            ))}
+      <div
+        className="calendar-container"
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+      >
+      {/* Ajout d'un "i" pour afficher un tooltip avec la légende */}
+      <div
+        className="info-tooltip"
+        onMouseEnter={() => setTooltipVisible(true)}
+        onMouseLeave={() => setTooltipVisible(false)}
+      >
+        <i
+          className="bi bi-info-circle"
+        />
+
+        {/* Tooltip visible si l'utilisateur survole l'icône */}
+        {tooltipVisible && (
+          <div className="tooltip-content">
+            <div><div className="color-box today" ></div><span>Aujourd'hui</span></div>
+            <div><div className="color-box weekend" ></div><span>Weekend</span></div>
+            <div><div className="color-box holiday" ></div><span>Jour Férié</span></div>
           </div>
-        ))}
+        )}
+      </div>
+        {/* Liste des mois */}
+        <div className="calendar-months d-flex">
+          {months.map((month, idx) => (
+            <div key={idx} className="month-column">
+              {/* En-tête du mois */}
+              <h5 className="month-header">{month.date.format('MMMM YYYY')}</h5>
+
+              {/* Jours du mois */}
+              <div className="calendar-days">
+                {month.days.map((day, idx) => (
+                  <div key={idx} className="day-row d-flex">
+                    {/* Jour du mois */}
+                    <div
+                      className={`day-cell ${day.date?.isSame(moment(), 'day') ? 'today' : ''} ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''}`}
+                    >
+                      {day.day || ''}
+                    </div>
+                  
+                    {/* Nom du jour */}
+                    <div
+                      className={`weekday-name ${day.date?.isSame(moment(), 'day') ? 'today' : ''} ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''}`}
+                    >
+                      {day.day ? day.weekday : ''}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
