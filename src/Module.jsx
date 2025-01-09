@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import * as Icon from 'react-bootstrap-icons';
 import lib from './lib';
+import { create } from 'zustand';
+import {useFormationStore} from './data';
+
+
 
 function Module(props) {
     const [data, setData] = useState(props.data);
@@ -9,11 +13,7 @@ function Module(props) {
     const [debut, setDebut] = useState(props.debut || "");
     const [modules, setModules] = useState([]);  // Liste des modules
     const [fin, setFin] = useState(props.fin);
-    const [nom, setNom] = useState(() => {
-        const saved = localStorage.getItem("nom");
-        const initialValue = JSON.parse(saved);
-        return initialValue || "";
-    }); //Nom de la formation
+
 
     const handleChange = (evt) => {
         let tmp = {...data};
@@ -70,8 +70,12 @@ function Module(props) {
         return modules;
     };
 
+    const nom = useFormationStore((state) => state.nom);
+    const setNom = useFormationStore((state) => state.setNom);
+
     return (
         <div>
+            {useFormationStore.nom}
             <div className='row'>
                 <div className='col-4'>
                     <div className="form-floating">
@@ -95,26 +99,27 @@ function Module(props) {
             </div>
 
             <div>
-                <input placeholder="Nom de la formation" value={nom} onChange={handleChangeNom}/>
+                <input placeholder={nom} onChange={(e) => setNom(e.target.value)} />
                 <h1>{nom}</h1>
             </div>
 
             <div>
                 {Array.isArray(modules) && modules.map((module, index) => (
                     <div key={index} className="row module" style={{ backgroundColor: module.couleur }}>
-                                                    <div className="col-11">
+                            <div className="col-11">
                                 <div className="form-floating mb-2 mt-2">
                                     <input
                                         type="text"
                                         className="form-control"
                                         name='nom'
                                         id={`floatingInput1-${index}`}
-                                        placeholder="Nom"
-                                        value={module.nom}
-                                        onChange={(e) => handleChangeModule(index, 'nom', e.target.value)}
+                                        placeholder={nom}
+                                        
+                                        onChange={(e) => setNom(e.target.value)}
                                     />
                                     <label htmlFor={`floatingInput1-${index}`}>Nom</label>
                                 </div>
+                        
                             </div>
                             <div className="col-1 text-end align-self-center">
                                 <a className="btn btn-primary"><Icon.ArrowUp /></a>
@@ -181,7 +186,9 @@ function Module(props) {
                                 <a className="btn btn-primary"><Icon.ArrowDown /></a>
                             </div>
                     </div>
+                    
                 ))}
+                
             </div>
             
 
