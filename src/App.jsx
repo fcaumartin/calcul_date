@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Module from './Module';
+import Interruptions from './Interruptions';
 import { FaHome, FaBook, FaCalendarAlt, FaCog } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Calendar from './Calendar';
-// import Interruptions from './Interruptions';
 
 function App() {
     const [page, setPage] = useState("accueil"); // Gestion des pages
