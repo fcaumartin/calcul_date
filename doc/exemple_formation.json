@@ -1,0 +1,33 @@
+{
+    "nom": "formation_test",
+    "dateDebut": "",
+    "dateFin": "",
+    "modules": [
+        {
+            "nom": "module1",
+            "dateDebut": "2025-01-10",
+            "dateFin": "2025-01-15",
+            "duree"  : 0,
+            "couleur": "#445566",
+            "position": 0,
+            "journéeEntiere": false
+        },
+        {
+            "nom": "",
+            "dateDebut": "",
+            "dateFin": "",
+            "duree"  : 0,
+            "couleur": "#445566",
+            "position": 0,
+            "journéeEntiere": false
+        }
+    ],
+    "interruptions": [
+        {
+            "dateDebut": "",
+            "dateFin": "",
+            "couleur" : "",
+            "active": true
+        }
+    ]
+}
