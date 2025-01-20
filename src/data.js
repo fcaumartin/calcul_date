@@ -31,4 +31,9 @@ const useModuleStore = create(
   )
 );
 
-export default useModuleStore;
+const useInterruptionsStore = {
+  test: null
+};
+
+export default { useModuleStore} 
+export { useInterruptionsStore };
