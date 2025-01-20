@@ -1,10 +1,10 @@
-import {useInterruptionsStore} from './data';
+import useStore from './data';
 
 
 function Interruptions() {
 
 
-    const date_inter = useInterruptionsStore((state)=>state.date_inter);
+    const date_inter = useStore((state)=>state.date_inter);
 
     return(
         <div>

@@ -4,11 +4,11 @@ const horaires = [ 7.75, 7.75, 7.75, 7.75, 4 ]
 // const horaires = [ 7, 7, 7, 7, 7 ]
 
 
-const consume = (date_debut, duree, retard=0) => {
+const consume = (date_dateDebut, duree, retard=0) => {
 
     duree -= Math.abs(retard)
     
-    let m = moment(date_debut, "YYYY-MM-DD")
+    let m = moment(date_dateDebut, "YYYY-MM-DD")
     m = jour_ouvre(m)
 
     while (duree>0) {
@@ -22,7 +22,7 @@ const consume = (date_debut, duree, retard=0) => {
     }
 
     return { 
-        fin: m.format("YYYY-MM-DD"), 
+        dateFin: m.format("YYYY-MM-DD"), 
         retard: Math.abs(duree) 
     }
 }

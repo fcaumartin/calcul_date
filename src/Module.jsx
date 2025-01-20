@@ -1,27 +1,27 @@
 import { useEffect } from "react";
 import * as Icon from "react-bootstrap-icons";
-import useModuleStore from "./data";
+import useStore from "./data";
 import lib from "./lib";
 
 function Module() {
   const {
     modules,
-    debut,
+    dateDebut,
     nom,
-    setDebut,
+    setDateDebut,
     setNom,
     addModule,
     updateModule,
     deleteModule,
-  } = useModuleStore();
+  } = useStore();
 
   const handleAddModule = () => {
     const lastModule = modules[modules.length - 1];
-    const newStart = lastModule ? lastModule.fin : debut;
+    const newStart = lastModule ? lastModule.dateFin : dateDebut;
 
     const newModule = {
-        nom: "Nom du module",
-        debut: newStart,
+        nom: "",
+        dateDebut: newStart,
         couleur: "#FF0000",
         duree: 37
     };
@@ -34,10 +34,10 @@ function Module() {
   const handleUpdateModule = (index, field, value) => {
         const updatedModule = { ...modules[index], [field]: value };
         
-        if (field === "duree" || field === "debut") {
+        if (field === "duree" || field === "dateDebut") {
             const updatedModules = [...modules];
             updatedModules[index] = updatedModule;
-            const replanifiedModules = planification(updatedModules, debut);
+            const replanifiedModules = planification(updatedModules, dateDebut);
             replanifiedModules.forEach((module, i) => updateModule(i, module));
         } else {
             updateModule(index, updatedModule);
@@ -51,20 +51,20 @@ function Module() {
 
   const planification = (modules, start) => {
     modules.forEach((module, i) => {
-      module.debut = start;
+      module.dateDebut = start;
       const result = lib.consume(start, module.duree);
-      module.fin = result.fin;
-      start = result.fin;
+      module.dateFin = result.dateFin;
+      start = result.dateFin;
     });
     return modules;
   };
 
   useEffect(() => {
-    if (debut) {
-      const updatedModules = planification([...modules], debut);
+    if (dateDebut) {
+      const updatedModules = planification([...modules], dateDebut);
       updatedModules.forEach((module, i) => updateModule(i, module));
     }
-  }, [debut]);
+  }, [dateDebut]);
 
   return (
     <div>
@@ -76,8 +76,8 @@ function Module() {
               className="form-control"
               id="floatingInput2"
               placeholder="Date de début"
-              value={debut}
-              onChange={(e) => setDebut(e.target.value)}
+              value={dateDebut}
+              onChange={(e) => setDateDebut(e.target.value)}
             />
             <label htmlFor="floatingInput2">Date de début</label>
           </div>
@@ -134,8 +134,8 @@ function Module() {
                 <input
                   type="date"
                   className="form-control"
-                  value={module.fin}
-                  onChange={(e) => handleUpdateModule(index, "fin", e.target.value)}
+                  value={module.dateFin}
+                  onChange={(e) => handleUpdateModule(index, "dateFin", e.target.value)}
                 />
                 <label>Date de fin</label>
               </div>

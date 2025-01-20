@@ -3,13 +3,15 @@ import React from 'react';
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const useModuleStore = create(
+const useStore = create(
   persist(
     (set) => ({
+      nom: "formation_test",
+      dateDebut: "",
+      dateFin: "",
       modules: [],
-      debut: "",
-      nom: "",
-      setDebut: (debut) => set({ debut }),
+      interruptions: [],
+      setDateDebut: (dateDebut) => set({ dateDebut }),
       setNom: (nom) => set({ nom }),
       addModule: (module) => set((state) => ({ modules: [...state.modules, module] })),
       updateModule: (index, updatedModule) =>
@@ -31,9 +33,5 @@ const useModuleStore = create(
   )
 );
 
-const useInterruptionsStore = create((set) => 
-({date_inter: [],
-}))
+export default  useStore; 
 
-export default  useModuleStore; 
-export { useInterruptionsStore };
