@@ -31,9 +31,9 @@ const useModuleStore = create(
   )
 );
 
-const useInterruptionsStore = {
-  test: null
-};
+const useInterruptionsStore = create((set) => 
+({date_inter: [],
+}))
 
-export default { useModuleStore} 
+export default  useModuleStore; 
 export { useInterruptionsStore };
