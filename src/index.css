@@ -12,6 +12,7 @@
   display: flex;
   overflow-x: auto; /* Activer le défilement horizontal */
   white-space: nowrap; /* Éviter les retours à la ligne */
+  justify-content: space-around;
   margin: 0 30px;
   border: 2px solid #555555;
 }
@@ -19,6 +20,29 @@
 .day-row {
   align-items: center;
   border: 1px solid #555555 ;
+  position: relative; /* Position relative pour placer la tooltip */
+}
+
+.day-row:hover .module-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.module-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+  transition: opacity 0.4s ease-in-out;
 }
 
 .weekday-name {
@@ -64,49 +88,29 @@
   background-color: lightgray; /* Couleur différente pour les weekends */
 }
 
-
-/* Positionnement de l'icône d'information */
-.info-tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-/* Icône d'information */
-.info-tooltip i {
-  font-size: 24px;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-/* Style du tooltip */
-.tooltip-content {
+/* Style pour la légende en bas */
+.legend-container {
   display: flex;
-  flex-direction: column; /* Aligne les éléments verticalement */
+  justify-content: space-around;
+  align-items: center;
   background-color: white;
-  border-radius: 5px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
-  position: absolute;
-  top: 40px; /* Positionner le tooltip juste en dessous de l'icône */
-}
+  padding: 10px 10px;
+  margin: 10px 30px;
+  }
 
-/* Style pour chaque légende de couleur */
-.tooltip-content div {
+.legend-box {
   display: flex;
   align-items: center;
-  margin-bottom: 10px; /* Espacement entre chaque légende */
-  margin: 5px;
-  padding: 5px;
 }
 
-/* Style du rectangle de couleur */
-.tooltip-content .color-box {
+.legend-box .color-box {
   width: 40px;
   height: 20px;
-  margin-right: 10px; 
-  border: 1px solid;
+  margin-right: 10px;
+  border: 1px solid #000;
 }
 
-/* Lorsque l'utilisateur survole l'icône d'information, le tooltip devient visible */
-.info-tooltip:hover .tooltip-content {
-  opacity: 0.95;
+.legend-text {
+  font-size: 14px;
+  font-style: italic;
 }
