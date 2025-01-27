@@ -4,11 +4,13 @@ import Interruptions from './Interruptions';
 import { FaHome, FaBook, FaCalendarAlt, FaCog } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Calendar from './Calendar';
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 function App() {
     const [page, setPage] = useState("accueil"); // Gestion des pages
 
     return (
+        <BrowserRouter>
         <div className="container-fluid">
             {/* Navbar */}
             <div className="row">
@@ -21,38 +23,40 @@ function App() {
                         <div className="collapse navbar-collapse" id="navbarNav">
                             <ul className="navbar-nav">
                                 <li className="nav-item">
-                                    <button className={`nav-link ${page === "accueil" ? "active" : ""}`} onClick={() => setPage("accueil")}>
+                                    {/* <Link to="/" className={`nav-link ${page === "accueil" ? "active" : ""}`}>
                                         Accueil
-                                    </button>
+                                    </Link> */}
                                 </li>
                                 <li className="nav-item">
-                                    <button className={`nav-link ${page === "modules" ? "active" : ""}`} onClick={() => setPage("modules")}>
-                                        Modules
-                                    </button>
+                                    <Link to="/module" className={`nav-link ${page === "accueil" ? "active" : ""}`}>
+                                        Module
+                                    </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <button className={`nav-link ${page === "interruptions" ? "active" : ""}`} onClick={() => setPage("interruptions")}>
-                                        Interruptions
-                                    </button>
+                                    <Link to="/interruption" className={`nav-link ${page === "accueil" ? "active" : ""}`}>
+                                        Interruption
+                                    </Link>
                                 </li>
                                 <li className="nav-item">
-                                    <button className={`nav-link ${page === "calendrier" ? "active" : ""}`} onClick={() => setPage("calendrier")}>
+                                    <Link to="/calendar" className={`nav-link ${page === "accueil" ? "active" : ""}`}>
                                         Calendrier
-                                    </button>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
                     </nav>
 
                     <main className='my-3'>
-                        {/* Affichage de la page active */}
-                        {page === "accueil" && <div><h2>Bienvenue sur l'application de gestion de Formation !</h2><p>Choisissez une option dans la navigation pour commencer.</p></div>}
-                        {page === "modules" && <Module />}
-                        {page === "interruptions" && <Interruptions />}
-                        {page === "calendrier" && <Calendar />}
+                        <Routes>
+                            {/* <Route path="/" element={<App />}></Route> */}
+                            <Route path="/module" element={<Module />}></Route>
+                            <Route path="/calendar" element={<Calendar />}></Route>
+                            <Route path="/interruption" element={<Interruptions />}></Route>
+                        </Routes>
                     </main>
             </div>
         </div>
+        </BrowserRouter>
     );
 }
 
