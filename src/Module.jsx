@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import * as Icon from "react-bootstrap-icons";
-import useModuleStore from "./data";
+import useStore from "./data";
 import lib from "./lib";
 
 function Module() {
@@ -13,7 +13,7 @@ function Module() {
     addModule,
     updateModule,
     deleteModule,
-  } = useModuleStore();
+  } = useStore();
 
   const handleAddModule = () => {
     const lastModule = modules[modules.length - 1];

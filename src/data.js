@@ -3,13 +3,18 @@ import React from 'react';
 import { create } from 'zustand'
 import { persist } from "zustand/middleware";
 
-const useModuleStore = create(
+const useStore = create(
   persist(
     (set) => ({
       modules: [],
+      interruptions: [],
       debut: "",
+      fin: "",
       nom: "",
+
+
       setDebut: (debut) => set({ debut }),
+      setFin: (fin) => set({ fin }),
       setNom: (nom) => set({ nom }),
       addModule: (module) => set((state) => ({ modules: [...state.modules, module] })),
       updateModule: (index, updatedModule) =>
@@ -24,6 +29,16 @@ const useModuleStore = create(
           modules.splice(index, 1);
           return { modules };
         }),
+
+        addInterruption: (interruption) => set((state) => ({interruptions: [...state.interruptions, interruption] })),
+        updateInterruption: (index, updatedInterruption) =>
+          set((state) => {
+            const interruptions = [...state.interruptions];
+            interruptions[index] = updatedInterruption;
+            return { interruptions };
+          }),
+
+
     }),
     {
       name: "module-storage",
@@ -32,29 +47,7 @@ const useModuleStore = create(
 );
 
 
-const useInterruptionsStore = create(
-  persist(
-    (set) => ({
-      date_inter: [],
-      debut: "",
-      fin: "",
-      setDebut: (debut) => set({debut}),
-      setFin: (fin) => set({fin}),
-      addInterruption: (date_inter) => set((state) => ({date_inter: [...state.date_inter, date_inter] })),
-      updateInterruption: (index, updatedInterruption) =>
-        set((state) => {
-          const Interruptions = [...state.Interruptions];
-          Interruptions[index] = updatedInterruption;
-          return { Interruptions };
-        }),
-    }),
-    {
-      name: "interruptions-storage",
-    }
-  ),
-);
 
+export default useStore
 
-export default useModuleStore
-export {useInterruptionsStore}
 

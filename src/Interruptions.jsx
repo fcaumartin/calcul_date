@@ -1,29 +1,32 @@
-import {useInterruptionsStore} from './data';
+import useStore from './data';
 
 
 function Interruptions() {
 
 const {
-    date_inter,
+    interruptions,
     debut,
     fin,
     setDebut,
     setFin,
     addInterruption,
-} = useInterruptionsStore();
+} = useStore();
 
 
 const handleAddInterruption = () => {
-    
+
+
 
     const newInterruption = {
-        debut: "",
-        fin : "",
+        debut,
+        fin,
     };
 
-    const updatedInterruptions = [...Interruptions, newInterruption];
+
     addInterruption(newInterruption);
 };
+
+
 
 
     return(
@@ -66,7 +69,13 @@ const handleAddInterruption = () => {
                     <button className="btn btn-primary my-3 w-100" onClick={handleAddInterruption}>Ajouter la(les) date(s)</button>
                 </div>
 
-            <div>{date_inter}</div>
+            <div>
+            {interruptions.map((interruption, index) => (
+                <li key={index}>
+                    {interruption.debut} - {interruption.fin} 
+                </li>
+            ))}
+            </div>
         </div>
     )
 
