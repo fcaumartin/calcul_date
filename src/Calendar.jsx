@@ -14,6 +14,7 @@ moment.locale('fr', {
 
 const Calendar = () => {
   const { modules } = useStore(); // Récupère les modules depuis le store
+  const { interruptions } = useStore(); // Récupère les interruptions depuis le store
   const [months, setMonths] = useState([]);
   const [moduleLegends, setModuleLegends] = useState([]); // Nouveau state pour les légendes des modules
   const scrollContainerRef = useRef(null);
@@ -25,6 +26,12 @@ const Calendar = () => {
   const isWeekend = (dayDate) => {
     const dayOfWeek = dayDate.day(); // Renvoie le jour de la semaine (0 = dimanche, 6 = samedi)
     return dayOfWeek === 0 || dayOfWeek === 6; // Vérifier si c'est un samedi ou un dimanche
+  };
+
+  const isInterruption = (dayDate) => {
+    return interruptions.some((interruption) => 
+      dayDate.isSame(interruption.date, 'day')
+    );
   };
 
   useEffect(() => {
@@ -69,8 +76,8 @@ const Calendar = () => {
   };
 
   const generateMonthDays = (date) => {
-    const startOfMonth = date.clone().startOf('month');
-    const endOfMonth = date.clone().endOf('month');
+    const startOfMonth = date.clone().startOf("month");
+    const endOfMonth = date.clone().endOf("month");
     const days = [];
   
     for (let day = 1; day <= endOfMonth.date(); day++) {
@@ -80,18 +87,27 @@ const Calendar = () => {
       const dayModules = modules.filter((module) => {
         const moduleStart = moment(module.dateDebut);
         const moduleEnd = moment(module.dateFin);
-        return dayDate.isBetween(moduleStart, moduleEnd, 'day', '[]'); // Vérifie si le jour est dans la plage
+        return dayDate.isBetween(moduleStart, moduleEnd, "day", "[]"); // Vérifie si le jour est dans la plage
+      });
+  
+      // Vérifier si le jour est dans une interruption
+      const dayInterruption = interruptions.find((interruption) => {
+        const interruptionStart = moment(interruption.dateDebut);
+        const interruptionEnd = moment(interruption.dateFin);
+        return dayDate.isBetween(interruptionStart, interruptionEnd, "day", "[]");
       });
   
       // Ajouter les propriétés pour chaque jour
       days.push({
         day,
         date: dayDate,
-        weekday: dayDate.format('ddd'), // Jour de la semaine (abrégé)
+        weekday: dayDate.format("ddd"), // Jour de la semaine (abrégé)
         isFerie: isJourFerie(dayDate), // Vérifier si c'est un jour férié
         isWeekend: isWeekend(dayDate), // Vérifier si c'est un weekend
+        isInterruption: isInterruption(dayDate), // Vérifier si c'est une interruption
+        interruptionCouleur: dayInterruption?.couleur || null, // Ajouter la couleur de l'interruption si présente
         modules: dayModules, // Ajouter les modules associés à ce jour
-        couleur: dayModules.length > 0 ? dayModules[0].couleur : null, // Couleur des modules si applicable
+        couleur: !isInterruption(dayDate) && dayModules.length > 0 ? dayModules[0].couleur : null,
       });
     }
     return days;
@@ -123,7 +139,7 @@ const Calendar = () => {
 
   return (
     <div className='m-0'>
-      {/* Légende en bas du calendrier */}
+      {/* Légende du calendrier */}
       <div className="legend-container m-0">
         <div className="legend-box">
           <div className="color-box today"></div><span className="legend-text">Aujourd'hui</span>
@@ -150,7 +166,7 @@ const Calendar = () => {
 
               {month.days.map((day, idx) => (
                 <div key={idx} className="day-row d-flex">
-                  {day.modules.length > 0 && !day.isWeekend && !day.isFerie && (
+                  {day.modules.length > 0 && !day.isWeekend && !day.isFerie && !day.isInterruption && (
                     <div className="module-tooltip">
                       {day.modules.map((module) => module.nom || 'Module').join(', ')}
                     </div>
@@ -158,8 +174,9 @@ const Calendar = () => {
 
                   {/* Jour du mois */}
                   <div
-                    className={`day-cell ${day.date?.isSame(moment(), 'day') ? 'today' : ''} ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''}`}
-                    style={{backgroundColor: !day.isFerie && !day.isWeekend && day.couleur ? day.couleur : undefined,}}
+                    className={`day-cell ${day.date?.isSame(moment(), 'day') ? 'today' : ''} ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? "interruption" : ""}`}
+                    style={{backgroundColor: day.isInterruption && day.interruptionCouleur
+                      ? day.interruptionCouleur: !day.isFerie && !day.isWeekend && day.couleur? day.couleur: undefined,}}
                   >
                     {day.day || ''}
                   </div>

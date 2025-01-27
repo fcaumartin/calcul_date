@@ -47,9 +47,11 @@ const useStore = create(
             return { modules };
           }),
 
-      addInterruption: (interruptions) =>
+
+
+      addInterruption: (interruption) =>
         set((state) => ({
-          interruptions: [...state.interruptions, interruptions],
+          interruptions: [...state.interruptions, interruption],
         })),
 
       updateInterruption: (index, updateInterruption) =>
