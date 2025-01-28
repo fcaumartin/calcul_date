@@ -181,21 +181,26 @@ const Calendar = () => {
                     {day.day || ''}
                   </div>
 
-                  {/* Liste des modules */}
-                  <div className="modules-list">
-                    {day.modules.map((module, index) => (
-                      <div key={index} className="module-item" style={{ color: module.couleur }}>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Nom du jour */}
+                  {/* Nom du jour ou liste des modules */}
                   <div
                     className={`weekday-name ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? 'interruption' : ''}`}
-                    style={{backgroundColor: day.isInterruption && day.interruptionCouleur
-                      ? day.interruptionCouleur: !day.isFerie && !day.isWeekend && day.couleur? day.couleur: undefined,}}
+                    style={{
+                      backgroundColor: day.isInterruption && day.interruptionCouleur
+                        ? day.interruptionCouleur
+                        : !day.isFerie && !day.isWeekend && day.couleur
+                        ? day.couleur
+                        : undefined,
+                    }}
                   >
-                    {day.day ? day.weekday : ''}
+                    {!day.isWeekend && !day.isFerie && day.modules.length > 0 ? (
+                      // Afficher les noms des modules seulement si ce n'est pas un weekend ou un jour férié
+                      <span className="modules-text">
+                        {day.modules.map((module, index) => module.nom).join(', ')}
+                      </span>
+                    ) : (
+                      // Sinon afficher le nom du jour
+                      <span className="day-text">{day.weekday}</span>
+                    )}
                   </div>
                 </div>
               ))}
