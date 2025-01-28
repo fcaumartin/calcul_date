@@ -191,7 +191,9 @@ const Calendar = () => {
 
                   {/* Nom du jour */}
                   <div
-                    className={`weekday-name ${day.date?.isSame(moment(), 'day') ? 'today' : ''} ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''}`}
+                    className={`weekday-name ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? 'interruption' : ''}`}
+                    style={{backgroundColor: day.isInterruption && day.interruptionCouleur
+                      ? day.interruptionCouleur: !day.isFerie && !day.isWeekend && day.couleur? day.couleur: undefined,}}
                   >
                     {day.day ? day.weekday : ''}
                   </div>
