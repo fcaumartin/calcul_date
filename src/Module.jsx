@@ -22,7 +22,7 @@ function Module() {
     const newModule = {
         nom: "",
         dateDebut: newStart,
-        couleur: "#FF0000",
+        couleur: "#CF4A4A",
         duree: 37
     };
 
@@ -158,15 +158,16 @@ function Module() {
                   value={module.couleur}
                   onChange={(e) => handleUpdateModule(index, "couleur", e.target.value)}
                   >                            
-                  <option style={{ backgroundColor: "#FF0000"}} value="#FF0000">Rouge</option>
-                  <option style={{ backgroundColor: "#00FF00"}} value="#00FF00">Vert</option>
-                  <option style={{ backgroundColor: "#0000FF"}} value="#0000FF">Bleu</option>
-                  <option style={{ backgroundColor: "#FFFF00"}} value="#FFFF00">Jaune</option>
-                  <option style={{ backgroundColor: "#00FFFF"}} value="#00FFFF">Cyan</option>
-                  <option style={{ backgroundColor: "#FF00FF"}} value="#FF00FF">Rose</option>
-                  <option style={{ backgroundColor: "#FF7F00"}} value="#FF7F00">Orange</option>
-                  <option style={{ backgroundColor: "#7F00FF"}} value="#7F00FF">Violet</option>
-                  <option style={{ backgroundColor: "#962805"}} value="#962805">Marron</option>
+                  <option style={{ backgroundColor: "#CF4A4A"}} value="#CF4A4A">Rouge</option>
+                  <option style={{ backgroundColor: "#63D471"}} value="#63D471">Vert</option>
+                  <option style={{ backgroundColor: "#69C8FF"}} value="#69C8FF">Bleu</option>
+                  <option style={{ backgroundColor: "#FFE373"}} value="#FFE373">Jaune</option>
+                  <option style={{ backgroundColor: "#68F5D1"}} value="#68F5D1">Cyan</option>
+                  <option style={{ backgroundColor: "#DEA3B2"}} value="#DEA3B2">Rose</option>
+                  <option style={{ backgroundColor: "#E07D36"}} value="#E07D36">Orange</option>
+                  <option style={{ backgroundColor: "#83487F"}} value="#83487F">Violet</option>
+                  <option style={{ backgroundColor: "#693E39"}} value="#693E39">Marron</option>
+                  <option style={{ backgroundColor: "#AAD65E"}} value="#AAD65E">Olive</option>
                   
               </select>
                 <label>Couleur</label>
