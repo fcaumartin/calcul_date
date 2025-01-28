@@ -1,6 +1,5 @@
 Couleurs: choisir les couleurs automatiquement lors de la création de nouveaux modules
 
-Modules: recalculer la date tout de suite
 
 Calendrier: retirer le nom du jour
 Calendrier: Afficher les interruptions
@@ -15,5 +14,6 @@ Réalisé :
 Couleurs: trouver des tons plus pastelles 
 Calendrier: colorier la ligne entière
 Calendrier: indiquer le nom du module au lieu du jour
+Modules: recalculer la date tout de suite
 
 
