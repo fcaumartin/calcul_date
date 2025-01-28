@@ -23,12 +23,18 @@ function Module() {
         nom: "",
         dateDebut: newStart,
         couleur: "#CF4A4A",
-        duree: 37
+        duree: 37,
+        // journeeEntiere: false,
+        // position: 0,
     };
 
-    const updatedModules = [...modules, newModule];
+    // Ajouter le nouveau module
     addModule(newModule);
-};
+
+    // Replanifier après ajout
+    const updatedModules = planification([...modules, newModule], dateDebut);
+    updatedModules.forEach((module, i) => updateModule(i, module));
+  };
 
 
   const handleUpdateModule = (index, field, value) => {
