@@ -3,47 +3,63 @@ import moment from "moment"
 const horaires = [ 7.75, 7.75, 7.75, 7.75, 4 ]
 // const horaires = [ 7, 7, 7, 7, 7 ]
 
-
-const consume = (date_dateDebut, duree, retard=0) => {
+const consume = (dateDebut, duree, retard = 0, interruptions = []) => {
 
     duree -= Math.abs(retard)
-    
-    let m = moment(date_dateDebut, "YYYY-MM-DD")
-    m = jour_ouvre(m)
-
+  
+    let m = moment(dateDebut, "YYYY-MM-DD")
+    m = jour_ouvre(m, interruptions)
+  
     while (duree>0) {
-        let jj = m.format("DD/MM/YYYY")
-        let day_of_week = m.format("d")-1
-        const heures_du_jour = horaires[day_of_week]
-        duree -= heures_du_jour
-        //console.log(m.format("DD/MM/YYYY") + " " + heures_du_jour + " (reste " + duree + ")")
-
-        if (duree>0) m = next(m)
+      let jj = m.format("DD/MM/YYYY")
+      let day_of_week = m.format("d")-1
+      const heures_du_jour = horaires[day_of_week]
+      duree -= heures_du_jour
+  
+      if (duree>0) m = next(m, interruptions)
     }
-
-    return { 
-        dateFin: m.format("YYYY-MM-DD"), 
-        retard: Math.abs(duree) 
+    console.log(`[consume] Fin prévue : ${m.format("YYYY-MM-DD")}, Retard : ${Math.abs(duree)}`);
+  
+    return {
+      dateFin: m.format("YYYY-MM-DD"),
+      retard: Math.abs(duree)
     }
-}
-
-const jour_ouvre = (d) => {
+  }
+  
+  const jour_ouvre = (d, interruptions) => {
     let dow = d.format("d")
-    while (dow==0 || dow==6 || jours_feries.includes(d.format("YYYY-MM-DD"))) {
-        d.add(1, 'days')
-        dow = d.format("d")
-    } 
-    return d;
-}
 
-const next = (d) => {
+    // Vérification si la date actuelle est un jour férié ou un jour d'interruption
+    while (
+      dow == 0 || // Week-end
+      dow == 6 || // Week-end
+      jours_feries.includes(d.format("YYYY-MM-DD")) || // Jour férié
+      interruptions.some(interruption =>
+        moment(d.format("YYYY-MM-DD")).isBetween(interruption.dateDebut, interruption.dateFin, null, '[]') // Date d'interruption
+      )
+    ) {
+      d.add(1, 'days')
+      dow = d.format("d")
+    }
+    return d;
+  }
+  
+  const next = (d, interruptions) => {
     let dow;
     do {
-        d.add(1, 'days')
-        dow = d.format("d")
-    } while (dow==0 || dow==6 || jours_feries.includes(d.format("YYYY-MM-DD")))
+      d.add(1, 'days')
+      dow = d.format("d")
+    } while (
+      dow == 0 || // Dimanche
+      dow == 6 || // Samedi
+      jours_feries.includes(d.format("YYYY-MM-DD")) || // Jour férié
+      interruptions.some(interruption =>
+        moment(d.format("YYYY-MM-DD")).isBetween(interruption.dateDebut, interruption.dateFin, null, '[]') // Date d'interruption
+      )
+    )
+    console.log('Liste des interruptions :', interruptions)
     return d;
-}
+  }
 
 const jours_feries = [
     "2028-01-01",

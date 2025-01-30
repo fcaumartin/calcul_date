@@ -30,7 +30,7 @@ const Calendar = () => {
 
   const isInterruption = (dayDate) => {
     return interruptions.some((interruption) => 
-      dayDate.isSame(interruption.date, 'day')
+      dayDate.isBetween(moment(interruption.dateDebut), moment(interruption.dateFin), 'day', '[]')
     );
   };
 
@@ -175,8 +175,13 @@ const Calendar = () => {
                   {/* Jour du mois */}
                   <div
                     className={`day-cell ${day.date?.isSame(moment(), 'day') ? 'today' : ''} ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? "interruption" : ""}`}
-                    style={{backgroundColor: day.isInterruption && day.interruptionCouleur
-                      ? day.interruptionCouleur: !day.isFerie && !day.isWeekend && day.couleur? day.couleur: undefined,}}
+                    style={{
+                      backgroundColor: day.isWeekend || day.isFerie
+                      ? day.isWeekend  // Mettre une couleur par défaut pour weekend et jour férié
+                      : day.isInterruption && day.interruptionCouleur
+                      ? day.interruptionCouleur
+                      : day.couleur,
+                    }}
                   >
                     {day.day || ''}
                   </div>
@@ -185,14 +190,14 @@ const Calendar = () => {
                   <div
                     className={`weekday-name ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? 'interruption' : ''}`}
                     style={{
-                      backgroundColor: day.isInterruption && day.interruptionCouleur
-                        ? day.interruptionCouleur
-                        : !day.isFerie && !day.isWeekend && day.couleur
-                        ? day.couleur
-                        : undefined,
+                      backgroundColor: day.isWeekend || day.isFerie
+                      ? day.isWeekend  // Mettre une couleur par défaut pour weekend et jour férié
+                      : day.isInterruption && day.interruptionCouleur
+                      ? day.interruptionCouleur
+                      : day.couleur,
                     }}
                   >
-                    {!day.isWeekend && !day.isFerie && day.modules.length > 0 ? (
+                    {!day.isWeekend && !day.isFerie && !day.isInterruption && day.modules.length > 0 ? (
                       // Afficher les noms des modules seulement si ce n'est pas un weekend ou un jour férié
                       <span className="modules-text">
                         {day.modules.map((module, index) => module.nom).join(', ')}

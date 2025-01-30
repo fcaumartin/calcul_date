@@ -1,12 +1,9 @@
 Couleurs: choisir les couleurs automatiquement lors de la création de nouveaux modules
 
-
-Calendrier: retirer le nom du jour
-Calendrier: Afficher les interruptions
+Calendrier: Ajouter legende Interruptions
 
 Interruption: Gérer le crud
 
-data.js/lib.js: prendre en compte les interruptions
 data.js/lib.js: tester next et jour_ouvré
 
 
@@ -15,5 +12,8 @@ Couleurs: trouver des tons plus pastelles
 Calendrier: colorier la ligne entière
 Calendrier: indiquer le nom du module au lieu du jour
 Modules: recalculer la date tout de suite
+Calendrier: retirer le nom du jour
+Calendrier: Afficher les interruptions
+data.js/lib.js: prendre en compte les interruptions
 
 

@@ -30,6 +30,7 @@ function Module() {
 
     // Ajouter le nouveau module
     addModule(newModule);
+    console.log(`[handleAddModule] Nouveau module ajouté :`, newModule);
 
     // Replanifier après ajout
     const updatedModules = planification([...modules, newModule], dateDebut);
@@ -55,10 +56,12 @@ function Module() {
     deleteModule(index);
   };
 
+  const { interruptions } = useStore(); 
+
   const planification = (modules, start) => {
     modules.forEach((module, i) => {
       module.dateDebut = start;
-      const result = lib.consume(start, module.duree);
+      const result = lib.consume(start, module.duree, 0, interruptions);
       module.dateFin = result.dateFin;
       start = result.dateFin;
     });
