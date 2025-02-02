@@ -8,6 +8,8 @@ function Interruptions() {
     dateDebut,
     setDateDebut,
     addInterruption,
+    deleteInterruption,
+    updateInterruption,
   } = useStore();
 
   // Local state for dateFin
@@ -29,6 +31,17 @@ function Interruptions() {
     addInterruption(newInterruption);
     setDateDebut("");
     setDateFin("");
+  };
+
+  const handleUpdateInterruption = (index, field, value) => {
+    const updatedInterruption = { ...interruptions[index], [field]: value };
+    
+      updateInterruption(index, updatedInterruption);
+    
+  };
+
+  const handleDeleteInterruption = (index) => {
+    deleteInterruption(index);
   };
 
   return (
@@ -82,6 +95,11 @@ function Interruptions() {
               <a className="btn btn-danger" onClick={() => handleDeleteInterruption(index)}>
                 <Icon.Trash />
               </a>
+
+              <a className="form-control btn btn-danger" onClick={() => handleUpdateInterruption(index)}>
+                 Modifier les dates
+              </a>
+
             </li>
             
           ))}
