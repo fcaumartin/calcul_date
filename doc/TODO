@@ -1,6 +1,5 @@
 Couleurs: choisir les couleurs automatiquement lors de la création de nouveaux modules
 
-Calendrier: Ajouter legende Interruptions
 
 Interruption: Gérer le crud
 
@@ -15,5 +14,6 @@ Modules: recalculer la date tout de suite
 Calendrier: retirer le nom du jour
 Calendrier: Afficher les interruptions
 data.js/lib.js: prendre en compte les interruptions
+Calendrier: Ajouter legende Interruptions
 
 

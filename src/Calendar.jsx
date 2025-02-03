@@ -16,7 +16,8 @@ const Calendar = () => {
   const { modules } = useStore(); // Récupère les modules depuis le store
   const { interruptions } = useStore(); // Récupère les interruptions depuis le store
   const [months, setMonths] = useState([]);
-  const [moduleLegends, setModuleLegends] = useState([]); // Nouveau state pour les légendes des modules
+  const [moduleLegends, setModuleLegends] = useState([]); // State pour les légendes des modules
+  const [interruptionLegends, setInterruptionLegends] = useState([]); // State pour les legendes d'interruptions
   const scrollContainerRef = useRef(null);
 
   const isJourFerie = (dayDate) => {
@@ -53,14 +54,23 @@ const Calendar = () => {
   }, [modules]);
   
 
-    // Mettre à jour la légende des modules
-    useEffect(() => {
-      const legend = modules.map((module) => ({
-        name: module.nom || 'Module',
-        color: module.couleur,
-      }));
-      setModuleLegends(legend);
-    }, [modules]);
+  // Mettre à jour la légende des modules
+  useEffect(() => {
+    const legend = modules.map((module) => ({
+      name: module.nom || 'Module',
+      color: module.couleur,
+    }));
+    setModuleLegends(legend);
+  }, [modules]);
+
+  useEffect(() => {
+    const legend = interruptions.map((interruption) => ({
+      name: interruption.nom || 'Interruption',
+      color: interruption.couleur || 'gray', // Défaut à gris si pas de couleur
+    }));
+    setInterruptionLegends(legend);
+  }, [interruptions]);
+  
 
   // Générer les mois à afficher
   const generateMonths = (startDate, count) => {
@@ -140,22 +150,26 @@ const Calendar = () => {
   return (
     <div className='m-0'>
       {/* Légende du calendrier */}
-      <div className="legend-container m-0">
-        <div className="legend-box">
-          <div className="color-box today"></div><span className="legend-text">Aujourd'hui</span>
-        </div>
-        <div className="legend-box">
+      <div className="legend-container m-0 d-flex flex-wrap">
+        <div className="legend-box p-2">
           <div className="color-box weekend"></div><span className="legend-text">Weekend</span>
         </div>
-        <div className="legend-box">
+        <div className="legend-box p-2">
           <div className="color-box holiday"></div><span className="legend-text">Jour Férié</span>
         </div>
           {moduleLegends.map((module, idx) => (
-            <div key={idx} className="legend-box">
+            <div key={idx} className="legend-box p-2">
               <div className="color-box" style={{ backgroundColor: module.color }}></div>
               <span className="legend-text">{module.name}</span>
             </div>
           ))}
+          {interruptionLegends.map((interruption, idx) => (
+            <div key={idx} className="legend-box p-2">
+              <div className="color-box" style={{ backgroundColor: interruption.color }}></div>
+              <span className="legend-text">{interruption.name}</span>
+            </div>
+          ))}
+          {/* Faire de meme pour les interruptions */}
       </div>
       <div className="calendar-container mt-3" ref={scrollContainerRef} onScroll={handleScroll}>
         <div className="calendar-months d-flex">
