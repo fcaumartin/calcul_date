@@ -33,8 +33,8 @@ function Interruptions() {
     setDateFin("");
   };
 
-  const handleUpdateInterruption = (index, field, value) => {
-    const updatedInterruption = { ...interruptions[index], [field]: value };
+  const handleUpdateInterruption = (index, value) => {
+    const updatedInterruption = { ...interruptions[index]};
     
       updateInterruption(index, updatedInterruption);
     
@@ -84,19 +84,19 @@ function Interruptions() {
         >
           Ajouter la(les) date(s)
         </button>
-      </div>
 
-      <div>
+        <div>
         <h4>Liste des interruptions :</h4>
         <ul>
           {interruptions.map((interruption, index) => (
             <li key={index}>
+                
               {interruption.dateDebut} - {interruption.dateFin}              
               <a className="btn btn-danger" onClick={() => handleDeleteInterruption(index)}>
                 <Icon.Trash />
               </a>
 
-              <a className="form-control btn btn-danger" onClick={() => handleUpdateInterruption(index)}>
+              <a className="form btn btn-danger" onClick={() => handleUpdateInterruption(index)}>
                  Modifier les dates
               </a>
 
@@ -105,6 +105,11 @@ function Interruptions() {
           ))}
         </ul>
       </div>
+
+
+      </div>
+
+      
     </div>
   );
 }
