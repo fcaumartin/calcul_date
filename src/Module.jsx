@@ -59,11 +59,17 @@ function Module() {
   const { interruptions } = useStore(); 
 
   const planification = (modules, start) => {
+    let retard = 0
     modules.forEach((module, i) => {
       module.dateDebut = start;
-      const result = lib.consume(start, module.duree, 0, interruptions);
+      const result = lib.consume(start, module.duree, retard, interruptions);
       module.dateFin = result.dateFin;
+      retard = result.retard
       start = result.dateFin;
+      console.log("--------------------------------------------")
+      console.log(module)
+      console.log(result)
+      console.log()
     });
     return modules;
   };

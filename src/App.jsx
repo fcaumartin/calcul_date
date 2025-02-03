@@ -15,7 +15,7 @@ function App() {
             {/* Navbar */}
             <div className="row">
                     {/* Affichage de la navbar */}
-                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light d-print-none">
                         <a className="navbar-brand" href="#">Gestion des Modules</a>
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>

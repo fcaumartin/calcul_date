@@ -6,31 +6,32 @@ function Interruptions() {
   const {
     interruptions,
     dateDebut,
-    setDateDebut,
+    // setDateDebut,
     addInterruption,
     deleteInterruption,
     updateInterruption,
   } = useStore();
 
   // Local state for dateFin
-  const [dateFin, setDateFin] = useState("");
+  const [dateFinI, setDateFinI] = useState("");
+  const [dateDebutI, setDateDebutI] = useState("");
 
   const handleAddInterruption = () => {
-    if (!dateDebut || !dateFin) {
+    if (!dateDebutI || !dateFinI) {
       alert("Veuillez remplir les deux dates !");
       return;
     }
 
     const newInterruption = {
-      dateDebut,
-      dateFin,
+      dateDebut: dateDebutI,
+      dateFin: dateFinI,
       couleur: "yellow",
       active: true,
     };
 
     addInterruption(newInterruption);
-    setDateDebut("");
-    setDateFin("");
+    setDateDebutI("");
+    setDateFinI("");
   };
 
   const handleUpdateInterruption = (index, value) => {
@@ -58,8 +59,8 @@ function Interruptions() {
             type="date"
             className="form-control"
             id="floatingInput1"
-            value={dateDebut}
-            onChange={(e) => setDateDebut(e.target.value)}
+            value={dateDebutI}
+            onChange={(e) => setDateDebutI(e.target.value)}
             placeholder="Date de début"
           />
           <label htmlFor="floatingInput1">Date de début d'interruption</label>
@@ -69,8 +70,8 @@ function Interruptions() {
             type="date"
             className="form-control"
             id="floatingInput2"
-            value={dateFin}
-            onChange={(e) => setDateFin(e.target.value)}
+            value={dateFinI}
+            onChange={(e) => setDateFinI(e.target.value)}
             placeholder="Date de fin"
           />
           <label htmlFor="floatingInput2">Date de fin d'interruption</label>

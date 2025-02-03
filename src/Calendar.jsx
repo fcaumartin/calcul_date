@@ -213,7 +213,7 @@ const Calendar = () => {
                   >
                     {!day.isWeekend && !day.isFerie && !day.isInterruption && day.modules.length > 0 ? (
                       // Afficher les noms des modules seulement si ce n'est pas un weekend ou un jour férié
-                      <span className="modules-text">
+                      <span className="modules-text text-truncate">
                         {day.modules.map((module, index) => module.nom).join(', ')}
                       </span>
                     ) : (
