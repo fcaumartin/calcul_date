@@ -2,8 +2,6 @@ Couleurs: choisir les couleurs automatiquement lors de la création de nouveaux 
 
 Interruption: Gérer le crud et ajouté bouton de switch pour active
 
-data.js/lib.js: tester next et jour_ouvré
-
 Calendrier: Gérer le cas ou on entre le nom d'une formation en entier (ex: concepteur developpeur d' application) overflow
 
 Module: Gerer le postionnement des modules 
@@ -22,5 +20,7 @@ Calendrier: retirer le nom du jour
 Calendrier: Afficher les interruptions
 data.js/lib.js: prendre en compte les interruptions
 Calendrier: Ajouter legende Interruptions
+Modules/lib.js: Planification Ok 
+data.js/lib.js: tester next et jour_ouvré
 
 
