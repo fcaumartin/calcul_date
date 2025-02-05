@@ -4,9 +4,7 @@ Interruption: Gérer le crud et ajouté bouton de switch pour active
 
 data.js/lib.js: tester next et jour_ouvré
 
-Calendrier: Gérer le cas ou on entre le nom d'une formation en entier (ex: concepteur developpeur d'application)
-
-Interruption: Bug suppression date de debut du module a l'ajout d'une interruption
+Calendrier: Gérer le cas ou on entre le nom d'une formation en entier (ex: concepteur developpeur d' application) overflow
 
 Module: Gerer le postionnement des modules 
 Module: Gerer la journéé entiere

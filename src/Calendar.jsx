@@ -64,12 +64,13 @@ const Calendar = () => {
   }, [modules]);
 
   useEffect(() => {
-    const legend = interruptions.map((interruption) => ({
-      name: interruption.nom || 'Interruption',
-      color: interruption.couleur || 'gray', // Défaut à gris si pas de couleur
-    }));
-    setInterruptionLegends(legend);
+    if (interruptions.length > 0) {
+      setInterruptionLegends([{ name: "Interruption", className: "interruption" }]); // Une seule légende
+    } else {
+      setInterruptionLegends([]); // Pas d'interruption, pas de légende
+    }
   }, [interruptions]);
+  
   
 
   // Générer les mois à afficher
@@ -165,7 +166,7 @@ const Calendar = () => {
           ))}
           {interruptionLegends.map((interruption, idx) => (
             <div key={idx} className="legend-box p-2">
-              <div className="color-box" style={{ backgroundColor: interruption.color }}></div>
+              <div className="color-box interruption"></div>
               <span className="legend-text">{interruption.name}</span>
             </div>
           ))}
@@ -188,7 +189,7 @@ const Calendar = () => {
 
                   {/* Jour du mois */}
                   <div
-                    className={`day-cell ${day.date?.isSame(moment(), 'day') ? 'today' : ''} ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? "interruption" : ""}`}
+                    className={`day-cell ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? "interruption" : ""}`}
                     style={{
                       backgroundColor: day.isWeekend || day.isFerie
                       ? day.isWeekend  // Mettre une couleur par défaut pour weekend et jour férié
