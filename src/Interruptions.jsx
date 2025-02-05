@@ -21,25 +21,42 @@ function Interruptions() {
       alert("Veuillez remplir les deux dates !");
       return;
     }
-
+  
     const newInterruption = {
       dateDebut: dateDebutI,
       dateFin: dateFinI,
       couleur: "yellow",
       active: true,
     };
-
+  
+    // Verifier si l'interruption existe déjà
+    const exists = interruptions.some(
+      (interruption) =>
+        interruption.dateDebut === dateDebutI && interruption.dateFin === dateFinI
+    );
+  
+    if (exists) {
+      alert("Cette interruption existe déjà.");
+      return;
+    }
+  
     addInterruption(newInterruption);
     setDateDebutI("");
     setDateFinI("");
   };
 
-  const handleUpdateInterruption = (index, value) => {
-    const updatedInterruption = { ...interruptions[index]};
-    
-      updateInterruption(index, updatedInterruption);
-    
+  const handleUpdateInterruption = (index) => {
+    const updatedInterruption = {
+      ...interruptions[index],
+      dateDebut: dateDebutI || interruptions[index].dateDebut,
+      dateFin: dateFinI || interruptions[index].dateFin, 
+    };
+  
+    updateInterruption(index, updatedInterruption);
+    setDateDebutI("");
+    setDateFinI("");
   };
+  
 
   const handleDeleteInterruption = (index) => {
     deleteInterruption(index);
