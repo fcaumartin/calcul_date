@@ -3,28 +3,49 @@ import moment from "moment"
 // const horaires = [ 7.75, 7.75, 7.75, 7.75, 4 ]
 const horaires = [ 7, 7, 7, 7, 7 ]
 
-const consume = (dateDebut, duree, retard = 0, interruptions = []) => {
+const consume = (dateDebut, duree, retard = 0, interruptions = [], offset = 0) => {
+  // On ajuste la durée avec le retard
+  duree -= Math.abs(retard)
 
-    duree -= Math.abs(retard)
-  
-    let m = moment(dateDebut, "YYYY-MM-DD")
-    m = jour_ouvre(m, interruptions)
-  
-    while (duree>0) {
-      let jj = m.format("DD/MM/YYYY")
-      let day_of_week = m.format("d")-1
-      const heures_du_jour = horaires[day_of_week]
-      duree -= heures_du_jour
-  
-      if (duree>0) m = next(m, interruptions)
-    }
-    console.log(`[consume] Fin prévue : ${m.format("YYYY-MM-DD")}, Retard : ${Math.abs(duree)}`);
-  
-    return {
-      dateFin: m.format("YYYY-MM-DD"),
-      retard: Math.abs(duree)
+  let m = moment(dateDebut, "YYYY-MM-DD")
+  m = jour_ouvre(m, interruptions)
+
+  let endedFullDay = false;
+  let currentOffset = offset;
+
+  while (duree > 0) {
+    let day_of_week = m.format("d") - 1
+    const totalHoursDay = horaires[day_of_week]; // nombre d'heures disponibles sur ce jour
+    const availableHours = totalHoursDay - currentOffset; // heures restantes sur la journée
+
+    if (duree < availableHours) {
+      // On consomme partiellement la journée
+      currentOffset += duree;
+      duree = 0;
+    } else if (duree === availableHours) {
+      // On consomme exactement la totalité des heures restantes
+      endedFullDay = true;
+      duree = 0;
+      currentOffset = 0; // le jour est entièrement consommé
+    } else {
+      // On consomme le reste du jour et on passe au jour suivant
+      duree -= availableHours;
+      m = next(m, interruptions);
+      currentOffset = 0; // nouvelle journée donc offset remis à zéro
     }
   }
+
+  console.log(
+    `[consume] Fin prévue : ${m.format("YYYY-MM-DD")}, Retard : ${Math.abs(duree)}, Offset: ${currentOffset}`
+  );
+
+  return {
+    dateFin: m.format("YYYY-MM-DD"),
+    retard: Math.abs(duree),
+    endedFullDay: endedFullDay,
+    offset: currentOffset // on renvoie également l'offset final
+  };
+};
   
   const jour_ouvre = (d, interruptions) => {
     let dow = d.format("d")
@@ -57,7 +78,6 @@ const consume = (dateDebut, duree, retard = 0, interruptions = []) => {
         moment(d.format("YYYY-MM-DD")).isBetween(interruption.dateDebut, interruption.dateFin, null, '[]') // Date d'interruption
       )
     )
-    console.log('Liste des interruptions :', interruptions)
     return d;
   }
 
@@ -152,5 +172,5 @@ const jours_feries = [
     "2021-12-25"
 ]
 
-export { consume, jours_feries };  // Exporter les deux éléments
+export { consume, jours_feries, horaires, next };  // Exporter les deux éléments
 export default {consume};

@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import * as Icon from "react-bootstrap-icons";
 import useStore from "./data";
-import lib from "./lib";
+import lib, { next, horaires } from "./lib";
+import moment from "moment";
+
 
 function Module() {
   const {
@@ -30,7 +32,6 @@ function Module() {
 
     // Ajouter le nouveau module
     addModule(newModule);
-    console.log(`[handleAddModule] Nouveau module ajouté :`, newModule);
 
     // Replanifier après ajout
     const updatedModules = planification([...modules, newModule], dateDebut);
@@ -59,20 +60,35 @@ function Module() {
   const { interruptions } = useStore(); 
 
   const planification = (modules, start) => {
-    let retard = 0
+    let retard = 0;
+    let offset = 0; // initialement, aucune heure n'est consommée dans le jour de départ
     modules.forEach((module, i) => {
+      // Définir la date de début pour le module actuel
       module.dateDebut = start;
-      const result = lib.consume(start, module.duree, retard, interruptions);
+      const duree = Number(module.duree);
+      const result = lib.consume(start, duree, retard, interruptions, offset);
       module.dateFin = result.dateFin;
-      retard = result.retard
-      start = result.dateFin;
-      console.log("--------------------------------------------")
-      console.log(module)
-      console.log(result)
-      console.log()
+      retard = result.retard;
+      
+      // Mise à jour du point de départ pour le module suivant :
+      if (result.endedFullDay) {
+        // Si le module a consommé entièrement le jour, le suivant commence le jour ouvré suivant
+        const nextDay = next(moment(result.dateFin, "YYYY-MM-DD"), interruptions);
+        start = nextDay.format("YYYY-MM-DD");
+        offset = 0;
+      } else {
+        // Sinon, il reste une partie de la journée (avec un offset)
+        start = result.dateFin;
+        offset = result.offset;
+      }
+      
+      console.log(
+        `[Module ${i}] Nom: ${module.nom || "(non défini)"} | Date début: ${module.dateDebut} | Date fin: ${module.dateFin} | Retard: ${result.retard} | Offset: ${result.offset}`
+      );
     });
     return modules;
   };
+  
 
   useEffect(() => {
     if (dateDebut) {
