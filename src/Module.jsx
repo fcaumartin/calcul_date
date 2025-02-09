@@ -9,6 +9,7 @@ function Module() {
   const {
     modules,
     dateDebut,
+    dateFin,
     nom,
     setDateDebut,
     setNom,
@@ -99,40 +100,36 @@ function Module() {
 
   return (
     <div>
-      <div className="row">
-        <div className="col-4">
-          <div className="form-floating">
-            <input
-              type="date"
-              className="form-control"
-              id="floatingInput2"
-              placeholder="Date de début"
-              value={dateDebut}
-              onChange={(e) => setDateDebut(e.target.value)}
-            />
-            <label htmlFor="floatingInput2">Date de début</label>
-          </div>
+
+      <div className="row module p-3 my-3 bg-light d-flex justify-content-between">
+        <div className="d-flex align-items-center col-10">
+          
+          <span>La formation <input className="mx-3" placeholder="Nom de la formation" value={nom} onChange={(e) => setNom(e.target.value)}/> se déroule du </span>
+
+            <div className="form-floating mx-3">
+              <input type="date" className="form-control" id="floatingInput2" placeholder="Date de début" value={dateDebut} onChange={(e) => setDateDebut(e.target.value)}/>
+              <label htmlFor="floatingInput2">Date de début</label>
+            </div>
+            
+           <span>au {dateFin}.</span>
+          
         </div>
-        <div className="col-4">
+        <div className="col">
           <button className="btn btn-primary my-3 w-100" onClick={handleAddModule}>
             Ajouter un module
           </button>
         </div>
-      </div>
-
-      <div>
-        <input
-          placeholder="Nom de la formation"
-          value={nom}
-          onChange={(e) => setNom(e.target.value)}
-        />
-        <h1>{nom}</h1>
-      </div>
+      </div> 
 
       <div>
         {modules.map((module, index) => (
           <div key={index} className="row module" style={{ backgroundColor: module.couleur }}>
-            <div className="col-11">
+            <div className="col-1 text-center align-self-center">
+              <a className="btn btn-primary">
+                <Icon.ArrowUp />
+              </a>
+            </div>
+            <div className="col-8">
               <div className="form-floating mb-2 mt-2">
                 <input
                   type="text"
@@ -146,29 +143,31 @@ function Module() {
                 <label htmlFor={`floatingInput1-${index}`}>Nom</label>
               </div>
             </div>
-            <div className="col-1 text-end align-self-center">
-              <a className="btn btn-primary">
-                <Icon.ArrowUp />
-              </a>
-            </div>
-            <div className="col-3">
-              <a className="btn btn-danger" onClick={() => handleDeleteModule(index)}>
-                <Icon.Trash />
-              </a>
-              <div className="form-check form-switch">
-                <input className="form-check-input" type="checkbox" role="switch" />
-                <label className="form-check-label">Journée entière</label>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="form-floating">
+            <div className="col-2">
+              <div className="form-floating mb-2 mt-2">
                 <input
                   type="date"
                   className="form-control"
-                  value={module.dateFin}
-                  onChange={(e) => handleUpdateModule(index, "dateFin", e.target.value)}
+                  value={module.dateDebut}
+                  onChange={(e) => handleUpdateModule(index, "dateDebut", e.target.value)}
                 />
-                <label>Date de fin</label>
+                <label>Date de début</label>
+              </div>
+            </div>
+            <div className="col-1 text-center align-self-center">
+              <a className="btn btn-danger" onClick={() => handleDeleteModule(index)}>
+                <Icon.Trash />
+              </a>
+            </div>
+            <div className="col-1 text-center align-self-center">
+              <a className="btn btn-primary">
+                <Icon.ArrowDown />
+              </a>
+            </div>
+            <div className="col-3 m-auto">
+              <div className="form-check form-switch">
+                <input className="form-check-input" type="checkbox" role="switch" />
+                <label className="form-check-label">Journée entière</label>
               </div>
             </div>
             <div className="col-3">
@@ -204,11 +203,18 @@ function Module() {
                 <label>Couleur</label>
               </div>
             </div>
-            <div className="col-1 text-end align-self-center">
-              <a className="btn btn-primary">
-                <Icon.ArrowDown />
-              </a>
+            <div className="col-2">
+              <div className="form-floating">
+                <input
+                  type="date"
+                  className="form-control"
+                  value={module.dateFin}
+                  onChange={(e) => handleUpdateModule(index, "dateFin", e.target.value)}
+                />
+                <label>Date de fin</label>
+              </div>
             </div>
+            <div className="col-1"></div>
           </div>
         ))}
       </div>
