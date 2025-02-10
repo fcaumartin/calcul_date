@@ -1,9 +1,10 @@
 Couleurs: choisir les couleurs automatiquement lors de la création de nouveaux modules
 
 Interruption: Gérer le crud et ajouté bouton de switch pour active
+Redessiner le crud avec des modals bootstrap
 
 Module: Gerer la journéé entiere
-Module: Recalculer apres suppression d'un modules
+Module: Recalculer apres suppression dun modules
 
 Export PDF
 ou
