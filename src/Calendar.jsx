@@ -156,6 +156,9 @@ const Calendar = () => {
           <div className="color-box weekend"></div><span className="legend-text">Weekend</span>
         </div>
         <div className="legend-box p-2">
+          <div className="color-box interruption"></div><span className='legend-text'>Interruptions</span>
+        </div>
+        <div className="legend-box p-2">
           <div className="color-box holiday"></div><span className="legend-text">Jour Férié</span>
         </div>
           {moduleLegends.map((module, idx) => (
@@ -164,13 +167,6 @@ const Calendar = () => {
               <span className="legend-text">{module.name}</span>
             </div>
           ))}
-          {interruptionLegends.map((interruption, idx) => (
-            <div key={idx} className="legend-box p-2">
-              <div className="color-box interruption"></div>
-              <span className="legend-text">{interruption.name}</span>
-            </div>
-          ))}
-          {/* Faire de meme pour les interruptions */}
       </div>
       <div className="calendar-container mt-3" ref={scrollContainerRef} onScroll={handleScroll}>
         <div className="calendar-months d-flex">

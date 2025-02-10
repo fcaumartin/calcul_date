@@ -27,8 +27,8 @@ function Module() {
         dateDebut: newStart,
         couleur: "#CF4A4A",
         duree: 37,
-        // journeeEntiere: false,
-        // position: 0,
+        position: modules.length,
+        journeeEntiere: false,
     };
 
     // Ajouter le nouveau module
@@ -42,6 +42,10 @@ function Module() {
 
   const handleUpdateModule = (index, field, value) => {
         const updatedModule = { ...modules[index], [field]: value };
+
+        if (field === "journeeEntiere") {
+          updatedModule.duree = value ? 8 : modules[index].duree;
+        }
         
         if (field === "duree" || field === "dateDebut") {
             const updatedModules = [...modules];
@@ -66,13 +70,18 @@ function Module() {
     modules.forEach((module, i) => {
       // Définir la date de début pour le module actuel
       module.dateDebut = start;
-      const duree = Number(module.duree);
+      let duree = Number(module.duree);
+
+      if (module.journeeEntiere) {
+        duree = horaires.journeeComplete; // Utilise la durée d'une journée entière depuis ta config
+      }
+
       const result = lib.consume(start, duree, retard, interruptions, offset);
       module.dateFin = result.dateFin;
       retard = result.retard;
       
       // Mise à jour du point de départ pour le module suivant :
-      if (result.endedFullDay) {
+      if (result.endedFullDay || module.journeeEntiere) {
         // Si le module a consommé entièrement le jour, le suivant commence le jour ouvré suivant
         const nextDay = next(moment(result.dateFin, "YYYY-MM-DD"), interruptions);
         start = nextDay.format("YYYY-MM-DD");
@@ -98,21 +107,36 @@ function Module() {
     }
   }, [dateDebut]);
 
+  const moveModule = (index, direction) => {
+    if (
+        (direction === "up" && index === 0) || 
+        (direction === "down" && index === modules.length - 1)
+    ) {
+        return;
+    }
+
+    const newModules = [...modules];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+
+    // Échanger les positions des modules
+    [newModules[index], newModules[targetIndex]] = [newModules[targetIndex], newModules[index]];
+
+    // Replanifier les modules après le déplacement
+    const updatedModules = planification(newModules, dateDebut);
+    updatedModules.forEach((module, i) => updateModule(i, module));
+  };
+
+
   return (
     <div>
-
       <div className="row module p-3 my-3 bg-light d-flex justify-content-between">
         <div className="d-flex align-items-center col-10">
-          
           <span>La formation <input className="mx-3" placeholder="Nom de la formation" value={nom} onChange={(e) => setNom(e.target.value)}/> se déroule du </span>
-
             <div className="form-floating mx-3">
               <input type="date" className="form-control" id="floatingInput2" placeholder="Date de début" value={dateDebut} onChange={(e) => setDateDebut(e.target.value)}/>
               <label htmlFor="floatingInput2">Date de début</label>
             </div>
-            
-           <span>au {dateFin}.</span>
-          
+          <span>au {dateFin}.</span>
         </div>
         <div className="col">
           <button className="btn btn-primary my-3 w-100" onClick={handleAddModule}>
@@ -125,7 +149,7 @@ function Module() {
         {modules.map((module, index) => (
           <div key={index} className="row module" style={{ backgroundColor: module.couleur }}>
             <div className="col-1 text-center align-self-center">
-              <a className="btn btn-primary">
+              <a className="btn btn-primary border border-dark" onClick={() => moveModule(index, "up")}>
                 <Icon.ArrowUp />
               </a>
             </div>
@@ -155,18 +179,24 @@ function Module() {
               </div>
             </div>
             <div className="col-1 text-center align-self-center">
-              <a className="btn btn-danger" onClick={() => handleDeleteModule(index)}>
+              <a className="btn btn-danger border border-dark" onClick={() => handleDeleteModule(index)}>
                 <Icon.Trash />
               </a>
             </div>
             <div className="col-1 text-center align-self-center">
-              <a className="btn btn-primary">
+              <a className="btn btn-primary border border-dark" onClick={() => moveModule(index, "down")}>
                 <Icon.ArrowDown />
               </a>
             </div>
             <div className="col-3 m-auto">
               <div className="form-check form-switch">
-                <input className="form-check-input" type="checkbox" role="switch" />
+                <input 
+                  type="checkbox" 
+                  className="form-check-input" 
+                  role="switch" 
+                  checked={module.journeeEntiere} 
+                  onChange={(e) => handleUpdateModule(index, "journeeEntiere", e.target.checked)}
+                />
                 <label className="form-check-label">Journée entière</label>
               </div>
             </div>

@@ -2,8 +2,8 @@ Couleurs: choisir les couleurs automatiquement lors de la création de nouveaux 
 
 Interruption: Gérer le crud et ajouté bouton de switch pour active
 
-Module: Gerer le postionnement des modules 
 Module: Gerer la journéé entiere
+Module: Recalculer apres suppression d'un modules
 
 Export PDF
 ou
@@ -20,5 +20,6 @@ data.js/lib.js: prendre en compte les interruptions
 Calendrier: Ajouter legende Interruptions
 Modules/lib.js: Planification Ok 
 data.js/lib.js: tester next et jour_ouvré
+Module: Gerer le postionnement des modules 
 
 
