@@ -136,7 +136,7 @@ function Module() {
               <input type="date" className="form-control" id="floatingInput2" placeholder="Date de début" value={dateDebut} onChange={(e) => setDateDebut(e.target.value)}/>
               <label htmlFor="floatingInput2">Date de début</label>
             </div>
-          <span>au {dateFin}.</span>
+            <span>au {new Date(dateFin).toLocaleDateString("fr-FR")}.</span>
         </div>
         <div className="col">
           <button className="btn btn-primary my-3 w-100" onClick={handleAddModule}>
@@ -174,6 +174,7 @@ function Module() {
                   className="form-control"
                   value={module.dateDebut}
                   onChange={(e) => handleUpdateModule(index, "dateDebut", e.target.value)}
+                  disabled
                 />
                 <label>Date de début</label>
               </div>
