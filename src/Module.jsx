@@ -18,14 +18,19 @@ function Module() {
     deleteModule,
   } = useStore();
 
+  const colors = ["#CF4A4A", "#63D471", "#69C8FF", "#FFE373", "#68F5D1", "#DEA3B2", "#E07D36", "#83487F", "#693E39", "#AAD65E"];
+
   const handleAddModule = () => {
     const lastModule = modules[modules.length - 1];
     const newStart = lastModule ? lastModule.dateFin : dateDebut;
 
+    let lastColorIndex = lastModule ? colors.indexOf(lastModule.couleur) : -1;
+    let nextColor = colors[(lastColorIndex + 1) % colors.length];
+
     const newModule = {
         nom: "",
         dateDebut: newStart,
-        couleur: "#CF4A4A",
+        couleur: nextColor,
         duree: 37,
         position: modules.length,
         journeeEntiere: false,
