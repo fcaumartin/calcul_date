@@ -4,6 +4,7 @@ import "moment/locale/fr";
 import { jours_feries } from './lib'; // Liste des jours fériés
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import useStore from './data'; // Import du store Zustand
+import { useReactToPrint } from "react-to-print";
 
 // Initialisation de Moment.js en français
 moment.locale('fr', {
@@ -13,143 +14,69 @@ moment.locale('fr', {
 });
 
 const Calendar = () => {
-  const { modules } = useStore(); // Récupère les modules depuis le store
-  const { interruptions } = useStore(); // Récupère les interruptions depuis le store
+  const { modules, interruptions } = useStore(); // Récupère les modules et interruptions depuis le store
   const [months, setMonths] = useState([]);
-  const [moduleLegends, setModuleLegends] = useState([]); // State pour les légendes des modules
-  const [interruptionLegends, setInterruptionLegends] = useState([]); // State pour les legendes d'interruptions
+  const [moduleLegends, setModuleLegends] = useState([]);
   const scrollContainerRef = useRef(null);
+  const calendarRef = useRef(null);
+  const [isReadyToPrint, setIsReadyToPrint] = useState(false);
 
-  const isJourFerie = (dayDate) => {
-    return jours_feries.some((jour) => moment(jour).isSame(dayDate, 'day')); // Vérifier si un jour est férié
-  };
-
-  const isWeekend = (dayDate) => {
-    const dayOfWeek = dayDate.day(); // Renvoie le jour de la semaine (0 = dimanche, 6 = samedi)
-    return dayOfWeek === 0 || dayOfWeek === 6; // Vérifier si c'est un samedi ou un dimanche
-  };
-
-  const isInterruption = (dayDate) => {
-    return interruptions.some((interruption) => 
-      dayDate.isBetween(moment(interruption.dateDebut), moment(interruption.dateFin), 'day', '[]')
-    );
-  };
+  useEffect(() => {
+    setIsReadyToPrint(!!calendarRef.current);
+  }, [calendarRef.current]);
 
   useEffect(() => {
     if (modules.length === 0) {
-      // Aucun module, afficher les 8 mois à partir du mois en cours
-      const initialMonths = generateMonths(moment().startOf('month'), 8);
-      setMonths(initialMonths);
+      setMonths(generateMonths(moment().startOf('month'), 8));
     } else {
-      // Modules présents, trouver les bornes de début et de fin
       const minDate = moment.min(modules.map((mod) => moment(mod.dateDebut)));
       const maxDate = moment.max(modules.map((mod) => moment(mod.dateFin)));
       const monthStart = minDate.clone().startOf('month');
       const monthEnd = maxDate.clone().endOf('month');
-      const count = monthEnd.diff(monthStart, 'months') + 1; // Nombre total de mois à afficher
-  
-      const moduleMonths = generateMonths(monthStart, count);
-      setMonths(moduleMonths);
+      const count = monthEnd.diff(monthStart, 'months') + 1;
+      setMonths(generateMonths(monthStart, count));
     }
-  }, [modules]);
-  
-
-  // Mettre à jour la légende des modules
-  useEffect(() => {
-    const legend = modules.map((module) => ({
-      name: module.nom || 'Module',
-      color: module.couleur,
-    }));
-    setModuleLegends(legend);
   }, [modules]);
 
   useEffect(() => {
-    if (interruptions.length > 0) {
-      setInterruptionLegends([{ name: "Interruption", className: "interruption" }]); // Une seule légende
-    } else {
-      setInterruptionLegends([]); // Pas d'interruption, pas de légende
-    }
-  }, [interruptions]);
-  
-  
+    setModuleLegends(modules.map((module) => ({ name: module.nom || 'Module', color: module.couleur })));
+  }, [modules]);
 
-  // Générer les mois à afficher
   const generateMonths = (startDate, count) => {
-    const generated = [];
-    for (let i = 0; i < count; i++) {
+    return Array.from({ length: count }, (_, i) => {
       const monthDate = startDate.clone().add(i, 'month');
-      generated.push({
-        date: monthDate,
-        days: generateMonthDays(monthDate),
-      });
-    }
-    return generated;
+      return { date: monthDate, days: generateMonthDays(monthDate) };
+    });
   };
 
   const generateMonthDays = (date) => {
-    const startOfMonth = date.clone().startOf("month");
-    const endOfMonth = date.clone().endOf("month");
-    const days = [];
-  
-    for (let day = 1; day <= endOfMonth.date(); day++) {
-      const dayDate = date.clone().date(day);
-  
-      // Trouver les modules correspondant à ce jour
-      const dayModules = modules.filter((module) => {
-        const moduleStart = moment(module.dateDebut);
-        const moduleEnd = moment(module.dateFin);
-        return dayDate.isBetween(moduleStart, moduleEnd, "day", "[]"); // Vérifie si le jour est dans la plage
-      });
-  
-      // Vérifier si le jour est dans une interruption
-      const dayInterruption = interruptions.find((interruption) => {
-        const interruptionStart = moment(interruption.dateDebut);
-        const interruptionEnd = moment(interruption.dateFin);
-        return dayDate.isBetween(interruptionStart, interruptionEnd, "day", "[]");
-      });
-  
-      // Ajouter les propriétés pour chaque jour
-      days.push({
-        day,
+    return Array.from({ length: date.daysInMonth() }, (_, i) => {
+      const dayDate = date.clone().date(i + 1);
+      const dayModules = modules.filter((mod) => dayDate.isBetween(moment(mod.dateDebut), moment(mod.dateFin), 'day', '[]'));
+      const dayInterruption = interruptions.find((int) => dayDate.isBetween(moment(int.dateDebut), moment(int.dateFin), 'day', '[]'));
+
+      return {
+        day: i + 1,
         date: dayDate,
         weekday: dayDate.format("ddd"), // Jour de la semaine (abrégé)
-        isFerie: isJourFerie(dayDate), // Vérifier si c'est un jour férié
-        isWeekend: isWeekend(dayDate), // Vérifier si c'est un weekend
-        isInterruption: isInterruption(dayDate), // Vérifier si c'est une interruption
+        isFerie: jours_feries.some((jour) => moment(jour).isSame(dayDate, 'day')),
+        isWeekend: [0, 6].includes(dayDate.day()),
+        isInterruption: !!dayInterruption,
         interruptionCouleur: dayInterruption?.couleur || null, // Ajouter la couleur de l'interruption si présente
         modules: dayModules, // Ajouter les modules associés à ce jour
-        couleur: !isInterruption(dayDate) && dayModules.length > 0 ? dayModules[0].couleur : null,
-      });
-    }
-    return days;
+        couleur: !dayInterruption && dayModules.length > 0 ? dayModules[0].couleur : null,
+      };
+    });
   };
-
-  // Ajouter des mois précédents ou suivants
-  const addMonths = (direction) => {
-    const firstMonth = months[0].date.clone();
-    const lastMonth = months[months.length - 1].date.clone();
-
-    if (direction === 'prev') {
-      const newMonths = generateMonths(firstMonth.clone().subtract(3, 'month'), 3);
-      setMonths([...newMonths, ...months]);
-    } else if (direction === 'next') {
-      const newMonths = generateMonths(lastMonth.clone().add(1, 'month'), 3);
-      setMonths([...months, ...newMonths]);
-    }
-  };
-
-  // Détecter le scroll horizontal
-  const handleScroll = () => {
-    const container = scrollContainerRef.current;
-    if (container.scrollLeft === 0) {
-      addMonths('prev');
-    } else if (container.scrollWidth - container.scrollLeft === container.clientWidth) {
-      addMonths('next');
-    }
-  };
+  
+  const handlePrint = useReactToPrint({
+    content: () => calendarRef.current,
+  });
+  
+  console.log("calendarRef.current:", calendarRef.current);
 
   return (
-    <div className='m-0'>
+    <div className='m-0' ref={calendarRef}>
       {/* Légende du calendrier */}
       <div className="legend-container m-0 d-flex flex-wrap">
         <div className="legend-box p-2">
@@ -161,70 +88,46 @@ const Calendar = () => {
         <div className="legend-box p-2">
           <div className="color-box holiday"></div><span className="legend-text">Jour Férié</span>
         </div>
-          {moduleLegends.map((module, idx) => (
-            <div key={idx} className="legend-box p-2">
-              <div className="color-box" style={{ backgroundColor: module.color }}></div>
-              <span className="legend-text">{module.name}</span>
-            </div>
-          ))}
+        {moduleLegends.map((module, idx) => (
+          <div key={idx} className="legend-box p-2">
+            <div className="color-box" style={{ backgroundColor: module.color }}></div>
+            <span className="legend-text">{module.name}</span>
+          </div>
+        ))}
       </div>
-      <div className="calendar-container mt-3" ref={scrollContainerRef} onScroll={handleScroll}>
+
+      <div className="calendar-container mt-3" ref={scrollContainerRef}>
         <div className="calendar-months d-flex">
           {months.map((month, idx) => (
             <div key={idx} className="month-column">
               <h5 className="month-header">{month.date.format('MMMM YYYY')}</h5>
               <div className="calendar-days">
-
-              {month.days.map((day, idx) => (
-                <div key={idx} className="day-row d-flex">
-                  {day.modules.length > 0 && !day.isWeekend && !day.isFerie && !day.isInterruption && (
-                    <div className="module-tooltip">
-                      {day.modules.map((module) => module.nom || 'Module').join(', ')}
+                {month.days.map((day, idx) => (
+                  <div key={idx} className="day-row d-flex">
+                    <div className={`day-cell ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? "interruption" : ""}`}
+                      style={{ backgroundColor: day.isFerie || day.isWeekend ? '' : day.isInterruption ? day.interruptionCouleur : day.couleur }}>
+                      {day.day}
                     </div>
-                  )}
-
-                  {/* Jour du mois */}
-                  <div
-                    className={`day-cell ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? "interruption" : ""}`}
-                    style={{
-                      backgroundColor: day.isWeekend || day.isFerie
-                      ? day.isWeekend  // Mettre une couleur par défaut pour weekend et jour férié
-                      : day.isInterruption && day.interruptionCouleur
-                      ? day.interruptionCouleur
-                      : day.couleur,
-                    }}
-                  >
-                    {day.day || ''}
+                    <div className={`weekday-name ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? 'interruption' : ''}`}
+                      style={{ backgroundColor: day.isFerie || day.isWeekend ? '' : day.isInterruption ? day.interruptionCouleur : day.couleur }}>
+                      {!day.isWeekend && !day.isFerie && !day.isInterruption && day.modules.length > 0 ? (
+                        <span className="modules-text text-truncate">
+                          {day.modules.map((mod) => mod.nom).join(', ')}
+                        </span>
+                      ) : (
+                        <span className="day-text">{day.weekday}</span>
+                      )}
+                    </div>
                   </div>
-
-                  {/* Nom du jour ou liste des modules */}
-                  <div
-                    className={`weekday-name ${day.isFerie ? 'holiday' : ''} ${day.isWeekend ? 'weekend' : ''} ${day.isInterruption ? 'interruption' : ''}`}
-                    style={{
-                      backgroundColor: day.isWeekend || day.isFerie
-                      ? day.isWeekend  // Mettre une couleur par défaut pour weekend et jour férié
-                      : day.isInterruption && day.interruptionCouleur
-                      ? day.interruptionCouleur
-                      : day.couleur,
-                    }}
-                  >
-                    {!day.isWeekend && !day.isFerie && !day.isInterruption && day.modules.length > 0 ? (
-                      // Afficher les noms des modules seulement si ce n'est pas un weekend ou un jour férié
-                      <span className="modules-text text-truncate">
-                        {day.modules.map((module, index) => module.nom).join(', ')}
-                      </span>
-                    ) : (
-                      // Sinon afficher le nom du jour
-                      <span className="day-text">{day.weekday}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-
+                ))}
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      <div className='d-flex justify-content-end mt-2 me-5'>
+        <button className="btn btn-outline-secondary" onClick={handlePrint} disabled={!isReadyToPrint}>Exporter en PDF</button>
       </div>
     </div>
   );
