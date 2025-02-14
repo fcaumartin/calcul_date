@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import useStore from "./data";
 import * as Icon from "react-bootstrap-icons";
 
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 function Interruptions() {
+
   const {
     interruptions,
     dateDebut,
@@ -62,6 +65,13 @@ function Interruptions() {
     deleteInterruption(index);
   };
 
+
+
+  const [show, setShow] = useState(false);
+  
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div>
       <div>
@@ -69,7 +79,7 @@ function Interruptions() {
           Choisissez une date et appuyez sur le bouton pour ajouter la date à la liste des dates d'interruptions.
         </h3>
       </div>
-
+      
       <div className="row">
         <div className="form-floating col-5">
           <input
@@ -114,9 +124,57 @@ function Interruptions() {
                 <Icon.Trash />
               </a>
 
-              <a className="form btn btn-danger" onClick={() => handleUpdateInterruption(index)}>
-                 Modifier les dates
-              </a>
+
+
+              
+                <a className="btn btn-primary" onClick={handleShow}>
+                  Modifier les dates
+                </a>
+              <div>
+                <Modal show={show} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Modification des dates</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    
+                    
+                  <div key={index} className="row">
+                    <div className="form-floating col-5">
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="floatingInput1"
+                        value={dateDebutI}
+                        onChange={(e) => setDateDebutI(e.target.value)}
+                        placeholder="Date de début"
+                      />
+                      <label htmlFor="floatingInput1">Date de début d'interruption</label>
+                    </div>
+                    <div className="form-floating col-5">
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="floatingInput2"
+                        value={dateFinI}
+                        onChange={(e) => setDateFinI(e.target.value)}
+                        placeholder="Date de fin"
+                      />
+                      <label htmlFor="floatingInput2">Date de fin d'interruption</label>
+                    </div>
+                    <div>{interruption.dateDebut} - {interruption.dateFin}</div>
+                  </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      Close
+                    </Button>
+                    <Button variant="primary" onClick={() => handleUpdateInterruption(index)}>
+                      Save Changes
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </div>
+
 
             </li>
             
@@ -127,7 +185,7 @@ function Interruptions() {
 
       </div>
 
-      
+
     </div>
   );
 }
