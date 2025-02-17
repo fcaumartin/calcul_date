@@ -115,21 +115,21 @@ function Interruptions() {
 
         <div>
         <h4>Liste des interruptions :</h4>
+        
         <ul>
+          
           {interruptions.map((interruption, index) => (
             <li key={index}>
                 
-              {interruption.dateDebut} - {interruption.dateFin}              
+              {interruption.dateDebut} - {interruption.dateFin}  
+
+              <a className="btn btn-primary" onClick={handleShow}>
+                Modifier les dates
+              </a>            
               <a className="btn btn-danger" onClick={() => handleDeleteInterruption(index)}>
                 <Icon.Trash />
               </a>
 
-
-
-              
-                <a className="btn btn-primary" onClick={handleShow}>
-                  Modifier les dates
-                </a>
               <div>
                 <Modal show={show} onHide={handleClose}>
                   <Modal.Header closeButton>
@@ -175,6 +175,10 @@ function Interruptions() {
                 </Modal>
               </div>
 
+              
+                
+              
+
 
             </li>
             
@@ -187,6 +191,8 @@ function Interruptions() {
 
 
     </div>
+
+    
   );
 }
 
