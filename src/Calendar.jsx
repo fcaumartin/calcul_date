@@ -18,12 +18,6 @@ const Calendar = () => {
   const [months, setMonths] = useState([]);
   const [moduleLegends, setModuleLegends] = useState([]);
   const scrollContainerRef = useRef(null);
-  const calendarRef = useRef(null);
-  const [isReadyToPrint, setIsReadyToPrint] = useState(false);
-
-  useEffect(() => {
-    setIsReadyToPrint(!!calendarRef.current);
-  }, [calendarRef.current]);
 
   useEffect(() => {
     if (modules.length === 0) {
@@ -69,14 +63,12 @@ const Calendar = () => {
     });
   };
   
-  const handlePrint = useReactToPrint({
-    content: () => calendarRef.current,
-  });
-  
-  console.log("calendarRef.current:", calendarRef.current);
+  const handlePrint = () =>{
+    window.print();
+  };
 
   return (
-    <div className='m-0' ref={calendarRef}>
+    <div className='m-0'>
       {/* Légende du calendrier */}
       <div className="legend-container m-0 d-flex flex-wrap">
         <div className="legend-box p-2">
@@ -91,7 +83,7 @@ const Calendar = () => {
         {moduleLegends.map((module, idx) => (
           <div key={idx} className="legend-box p-2">
             <div className="color-box" style={{ backgroundColor: module.color }}></div>
-            <span className="legend-text">{module.name}</span>
+            <span className="legend-text text-truncate">{module.name}</span>
           </div>
         ))}
       </div>
@@ -126,8 +118,14 @@ const Calendar = () => {
         </div>
       </div>
 
-      <div className='d-flex justify-content-end mt-2 me-5'>
-        <button className="btn btn-outline-secondary" onClick={handlePrint} disabled={!isReadyToPrint}>Exporter en PDF</button>
+      <div className='d-flex justify-content-end mt-2 me-5' id='print-button'>
+        <button className="btn btn-outline-secondary p-2" onClick={handlePrint}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-printer me-2" viewBox="0 0 16 16">
+            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+          </svg>
+          Impression
+        </button>
       </div>
     </div>
   );

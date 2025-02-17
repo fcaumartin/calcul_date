@@ -17,13 +17,6 @@
   border: 2px solid #555555;
 }
 
-@media print {
-  .calendar-container {
-    border: none !important;
-    margin: 0px !important;
-  }
-}
-
 .day-row {
   align-items: center;
   border: 1px solid #555555 ;
@@ -98,33 +91,111 @@
     rgba(128, 128, 128, 0.2) 10px,
     rgba(128, 128, 128, 0.4) 10px,
     rgba(128, 128, 128, 0.4) 15px
-  ) !important;
-  border: 1px solid ligray;
-}
-/* Style pour la légende en bas */
-.legend-container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: white;
-  padding: 10px 10px;
-  margin: 10px 30px;
+    ) !important;
+    border: 1px solid ligray;
   }
+  /* Style pour la légende en bas */
+  .legend-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    padding: 10px 10px;
+    margin: 10px 30px;
+  }
+  
+  .legend-box {
+    display: flex;
+    align-items: center;
+    max-width: 150px; /* Ajuste selon ton besoin */
+    overflow: hidden;
+  }
+  
+  .legend-box .color-box {
+    width: 40px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid #000;
+  }
+  
+  .legend-text {
+    font-size: 14px;
+    font-style: italic;
+    max-width: 100px; 
+  }
+  
+  
+  @media print {
+    .calendar-container {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      overflow: visible !important;
+      white-space: normal !important;
+      border: hidden !important;
+    }
 
-.legend-box {
-  display: flex;
-  align-items: center;
-}
+    .legend-container , .legend-box {
+      margin: 5px !important;
+      padding: 1px !important;
+    }
+  
+    .weekday-name {
+      width: 100px;
+      height: 16px;
+      display: flex;
+      padding-left: 15px;
+      align-items: center;
+      font-size: 12px;
+      font-weight: bold;
+      border-right: 1px solid lightgray;
+    }
+    
+    .day-cell {
+      width: 50px;
+      height: 16px;
+      border-right: 1px solid lightslategrey;
+    }
 
-.legend-box .color-box {
-  width: 40px;
-  height: 20px;
-  margin-right: 10px;
-  border: 1px solid #000;
-}
+    .calendar-months {
+      display: flex;
+      flex-wrap: wrap !important; /* Permet aux mois de passer à la ligne suivante */
+    }
+    
+    .month-column {
+      flex: 0 0 calc(100% / 6); /* 6 mois par ligne */
+      max-width: calc(100% / 6);
+      min-width: 150px;
+      padding: 5px;
+      page-break-inside: avoid;
+    }
 
-.legend-text {
-  font-size: 14px;
-  font-style: italic;
-}
+    #print-button {
+      display: none !important; 
+    }
 
+    .day-text , .modules-text , .day-cell{
+      font-size: 10px !important;
+    }
+
+    .month-header {
+      font-size: 14px !important;
+    }
+
+    .legend-box {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+    
+    .legend-box .color-box {
+      width: 20px;
+      height: 10px;
+      margin-right: 10px;
+      border: 1px solid #000;
+    }
+    
+    .legend-text {
+      font-size: 14px;
+      font-style: italic;
+    }
+  }
